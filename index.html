@@ -282,19 +282,17 @@
         far more than matched-random on eight models; (c) a stronger "+own" control confirms the recovered
         set is load-bearing.</figcaption></figure>
   </div>
+  <div class="wrap narrow reveal">
+    <h3 class="subact">Where it applies — and where it doesn't</h3>
+    <p class="lead">CoAx wins on the output-movement circuits whose heads share aligned write directions. Its
+      scope is honest: where redundancy is instead shared among co-firing heads, even input-side co-activation
+      finds them and CoAx is complementary; and on the MLP-dominated greater-than circuit the head-level
+      signal does not transfer — a property of the circuit, not the score.</p>
+  </div>
   <div class="wrap reveal">
-    <div class="split">
-      <figure class="figure zoom split-fig"><img src="assets/fig_crossmodel_heatmap.png" alt="Cross-model geometry"/>
-        <figcaption>Output- vs input-side geometry across twelve models.</figcaption></figure>
-      <div class="split-text">
-        <h4>Where it applies — and where it doesn't</h4>
-        <p>CoAx wins on the output-movement circuits whose heads share aligned write directions. Its scope is
-          honest: where redundancy is instead shared among co-firing heads, even input-side co-activation
-          finds them and CoAx is complementary.</p>
-        <p>And on the MLP-dominated greater-than circuit the head-level signal does not transfer — a property
-          of the circuit, not the score.</p>
-      </div>
-    </div>
+    <figure class="figure zoom" style="max-width:660px;margin:0 auto"><img src="assets/fig_crossmodel_heatmap.png" alt="Cross-model geometry"/>
+      <figcaption><b>Output- vs. input-side geometry across twelve models.</b> Blue = CoAx's co-ablation beats
+        input-side co-activation at recovering that circuit's redundancy; orange = co-activation wins.</figcaption></figure>
   </div>
   <div class="wrap reveal"><div class="figrow">
     <figure class="gcard"><img src="assets/fig_crossmodel_blindspot.png" alt="Blind spot across GPT-2"><figcaption>The first-order blind spot recurs across the whole GPT-2 family.</figcaption></figure>
@@ -322,7 +320,7 @@
     <div class="res-links">
       <a class="res" href="https://arxiv.org/abs/XXXX.XXXXX"><b>Paper</b><span>arXiv preprint</span></a>
       <a class="res" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><b>Code</b><span>reference implementation + one-command reproduction</span></a>
-      <a class="res" href="tutorial.html"><b>Tutorial</b><span>a narrated two-minute video tour</span></a>
+      <a class="res" href="tutorial.html"><b>Tutorial</b><span>a narrated three-minute video tour</span></a>
       <a class="res" href="#bibtex"><b>BibTeX</b><span>cite this work</span></a>
     </div>
     <div id="bibtex" class="bibtex">
