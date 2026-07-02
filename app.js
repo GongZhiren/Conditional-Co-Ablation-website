@@ -100,12 +100,12 @@
       html: "Ablate the three name-mover <b>primaries</b> — the heads a first-order analysis calls “the circuit”. The margin barely drops and accuracy holds at <b>0.97</b>: dormant backups silently take over. The circuit looks knocked out, but the capability survives." },
     coax: { margin: 1.37, acc: 0.70, cls: "ok", title: "Complete knockout",
       html: "Add the label-free <b>CoAx backups</b>. Now the margin collapses and accuracy falls to <b>0.70</b> — matching the documented-backup oracle (0.72). The capability is actually removed, and CoAx found the backups without labels." },
-    own: { margin: 0.90, acc: 0.24, cls: "warn", title: "Over-ablation",
+    own: { margin: 0.55, acc: 0.24, cls: "warn", title: "Over-ablation",
       html: "A first-order <b>top-up</b> of the same size removes the model’s own next-most-salient heads instead. It overshoots to <b>0.24</b>, cutting past the backups into the core name-movers. More heads — but the wrong ones." },
   };
   function setDemo(state) {
     const d = DEMO[state];
-    document.getElementById("marginBar").style.width = (d.margin / 2.6 * 100) + "%";
+    document.getElementById("marginBar").style.width = Math.min(100, d.margin / 2.53 * 100) + "%";
     document.getElementById("marginVal").textContent = (state === "own" ? "≈" : "") + d.margin.toFixed(2);
     document.getElementById("accBar").style.width = (d.acc * 100) + "%";
     document.getElementById("accVal").textContent = d.acc.toFixed(2);

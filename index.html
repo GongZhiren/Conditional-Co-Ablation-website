@@ -25,7 +25,7 @@
       <a href="#idea">Idea</a>
       <a href="#discovery">Discovery</a>
       <a href="#mechanism">Mechanism</a>
-      <a href="#impact">Impact</a>
+      <a href="#impact">Applications</a>
       <a href="#scale">Scale</a>
       <a href="tutorial.html">Tutorial</a>
     </div>
@@ -125,6 +125,10 @@
         module</b> a per-head score (a) cannot see. Intact (c) the primaries write the answer while the
         backups stay dormant; ablate the primaries (d) and the backups wake and re-route to the logit.</figcaption></figure>
   </div>
+  <div class="wrap reveal"><div class="figrow">
+    <figure class="gcard"><img src="assets/fig_synergy_matrix.png" alt="Synergy matrix"><figcaption>The pairwise synergy over the IOI heads — the boxed name-mover / backup block.</figcaption></figure>
+    <figure class="gcard"><img src="assets/fig_headmap.png" alt="Head map"><figcaption>The 12&times;12 head grid: first-order saliency vs. the CoAx score — the same inversion, in space.</figcaption></figure>
+  </div></div>
   <p class="flow reveal">The structure is there in the second-order signal. Does conditioning actually surface
     the documented backups?</p>
 </section>
@@ -166,6 +170,10 @@
       </div>
     </div>
   </div>
+  <div class="wrap wide reveal"><figure class="figure zoom"><img src="assets/fig_separation.png" alt="Blind-spot separation"/>
+    <figcaption><b>The same eight backups, two scores.</b> Every head placed by first-order saliency (left)
+      and by the CoAx score (right): the documented backups sit near the bottom on the left (AUC 0.33) and
+      jump to the top on the right (AUC 0.91).</figcaption></figure></div>
   <p class="flow reveal">A high rank is necessary, not sufficient. Are the surfaced heads <em>mechanistically</em>
     backups?</p>
 </section>
@@ -198,18 +206,38 @@
       </div>
     </div>
   </div>
+  <div class="wrap reveal">
+    <p class="lead center" style="margin-bottom:8px"><b>The recovered circuit, three views</b> — the primary
+      write-path (orange) and the dormant backup route (blue) CoAx adds in parallel.</p>
+    <div class="figrow three">
+      <figure class="gcard"><img src="assets/fig_circuit.png" alt="Functional circuit"><figcaption>Functional circuit</figcaption></figure>
+      <figure class="gcard"><img src="assets/fig_wiring.png" alt="Head re-wiring"><figcaption>Head-level re-wiring</figcaption></figure>
+      <figure class="gcard"><img src="assets/fig_routes.png" alt="Information routes"><figcaption>Token&times;layer routes</figcaption></figure>
+    </div>
+  </div>
   <p class="flow reveal">If they are load-bearing, they should change the tools that depend on them.</p>
 </section>
 
-<!-- ============ ACT 05 — IMPACT ============ -->
+<!-- ============ ACT 05 — APPLICATIONS ============ -->
 <section id="impact" class="sec">
   <div class="wrap narrow">
-    <div class="act-head reveal"><span class="act-n">05</span><div><span class="kicker">Why it matters</span>
-      <h2>The blind spot corrupts the tools built on it</h2></div></div>
-    <p class="lead reveal">Attribution, capability knockout, and pruning all rank components by the same
-      node-additive score — so each inherits the same error, and each is repaired by the recovered backups.
-      <span class="hint">Try the knockout below.</span></p>
+    <div class="act-head reveal"><span class="act-n">05</span><div><span class="kicker">Closing the loop · downstream applications</span>
+      <h2>The blind spot corrupts the tools built on it — CoAx repairs them</h2></div></div>
+    <p class="lead reveal">Attribution, capability knockout, and structured pruning all rank components by the
+      <em>same</em> node-additive score, so each inherits the same error wherever a circuit is redundant. Fed
+      the recovered backups — one label-free pass — all three are repaired.</p>
   </div>
+
+  <div class="wrap reveal">
+    <div class="takeaways">
+      <div class="tk"><div class="tk-n">1.76</div><p><b>Attribution recovered</b><br>the effect self-repair masked (vs 0.22 from the primaries alone)</p></div>
+      <div class="tk"><div class="tk-n">0.70</div><p><b>Knockout accuracy</b><br>matches the 0.72 documented-backup oracle; a first-order top-up overshoots</p></div>
+      <div class="tk"><div class="tk-n">80.6</div><p><b>Pruned perplexity @50%</b><br>vs gradient-Taylor 201, from 124M to 7B</p></div>
+    </div>
+  </div>
+
+  <div class="wrap narrow"><h3 class="subact reveal">Capability knockout — a knockout needs the backups
+    <span>· click through the states</span></h3></div>
   <div class="wrap reveal">
     <div class="demo-card">
       <div class="demo-controls">
@@ -220,7 +248,7 @@
       </div>
       <div class="demo-body">
         <div class="gauge">
-          <div class="gauge-label">IOI answer margin <span class="mono">(logit difference)</span></div>
+          <div class="gauge-label">IOI answer margin <span class="mono">(% of intact)</span></div>
           <div class="bar-track"><div id="marginBar" class="bar-fill"></div><div class="bar-val" id="marginVal">2.53</div></div>
           <div class="gauge-label" style="margin-top:18px">Task accuracy</div>
           <div class="bar-track"><div id="accBar" class="bar-fill acc"></div><div class="bar-val" id="accVal">1.00</div></div>
@@ -229,19 +257,12 @@
       </div>
     </div>
   </div>
-  <div class="wrap reveal">
-    <div class="split">
-      <div class="split-text">
-        <h4>Attribution and pruning, repaired</h4>
-        <p>Ablating the primaries alone drops the IOI logit-difference by only <b>0.22</b>; adding the
-          label-free CoAx backups recovers the masked <b>1.76</b> — the effect the redundancy hid.</p>
-        <p>And re-measuring the score as heads are removed gives a <b>repair-aware pruning order</b> that
-          keeps a backup once its primary is gone — nearest to dense at every scale from 124M to 7B.</p>
-      </div>
-      <figure class="figure zoom split-fig"><img src="assets/fig_applications.png" alt="Pruning across scales"/>
-        <figcaption>WikiText-2 perplexity vs. heads pruned; the co-ablation order (blue) stays nearest dense.</figcaption></figure>
-    </div>
-  </div>
+
+  <div class="wrap narrow"><h3 class="subact reveal">Repair-aware pruning <span>· the removal order that keeps backups</span></h3></div>
+  <div class="wrap reveal"><div class="figrow">
+    <figure class="gcard"><img src="assets/fig_applications.png" alt="Pruning across scales"><figcaption>Perplexity vs. heads pruned — the co-ablation order (blue) stays nearest dense, 124M&ndash;7B.</figcaption></figure>
+    <figure class="gcard"><img src="assets/fig_pruning.png" alt="Full pruning sweep"><figcaption>Full sparsity sweep — it dominates weight-, magnitude-, and gradient-based baselines.</figcaption></figure>
+  </div></div>
   <p class="flow reveal">One circuit, one model — does the phenomenon hold more broadly?</p>
 </section>
 
@@ -275,28 +296,22 @@
       </div>
     </div>
   </div>
+  <div class="wrap reveal"><div class="figrow">
+    <figure class="gcard"><img src="assets/fig_crossmodel_blindspot.png" alt="Blind spot across GPT-2"><figcaption>The first-order blind spot recurs across the whole GPT-2 family.</figcaption></figure>
+    <figure class="gcard"><img src="assets/fig_crossarch.png" alt="Cross-architecture induction"><figcaption>Induction completion transfers across six architecture families.</figcaption></figure>
+  </div></div>
 </section>
 
-<!-- ============ FIGURE GALLERY (deep dive) ============ -->
-<section class="sec">
-  <div class="wrap reveal">
-    <details class="more">
-      <summary>Explore the full figure set <span>(11 more figures from the paper)</span></summary>
-      <div class="gallery">
-        <figure class="gcard"><img src="assets/fig_separation.png" alt=""><figcaption>Blind-spot separation</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_synergy_matrix.png" alt=""><figcaption>Synergy matrix</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_headmap.png" alt=""><figcaption>Head-grid inversion</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_circuit.png" alt=""><figcaption>Functional circuit</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_wiring.png" alt=""><figcaption>Head re-wiring</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_routes.png" alt=""><figcaption>Information-flow routes</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_attn_pattern.png" alt=""><figcaption>Attention pattern</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_method_analysis.png" alt=""><figcaption>What makes it work</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_efficiency.png" alt=""><figcaption>Quality vs. cost</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_crossmodel_blindspot.png" alt=""><figcaption>Blind spot across GPT-2</figcaption></figure>
-        <figure class="gcard"><img src="assets/fig_pruning.png" alt=""><figcaption>Full pruning sweep</figcaption></figure>
-      </div>
-    </details>
-  </div>
+<!-- ============ UNDER THE HOOD ============ -->
+<section id="method" class="sec">
+  <div class="wrap narrow reveal"><span class="kicker">Under the hood</span>
+    <h2>What makes the score work — and what it costs</h2>
+    <p class="lead center">Two design choices carry it — conditioning and centering — and the price is
+      forward passes only: no gradients, no labels.</p></div>
+  <div class="wrap reveal"><div class="figrow">
+    <figure class="gcard"><img src="assets/fig_method_analysis.png" alt="Method analysis"><figcaption>Data-efficient (strong at 32 prompts); centering is the load-bearing ingredient; and the score is invariant to whether a backup writes the answer direction.</figcaption></figure>
+    <figure class="gcard"><img src="assets/fig_efficiency.png" alt="Quality vs. cost"><figcaption>Quality vs. compute: the conditional route reaches the second-order signal at O(#heads), far left of the explicit pairwise wall.</figcaption></figure>
+  </div></div>
 </section>
 
 <!-- ============ RESOURCES ============ -->

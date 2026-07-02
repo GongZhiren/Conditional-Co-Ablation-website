@@ -277,3 +277,9 @@ details.more[open]>summary{border-bottom:1px solid var(--line-soft)}
   .act-n{font-size:2rem; min-width:40px}
   .thesis{font-size:1.2rem}
 }
+
+/* applications sub-headings */
+.subact{font-family:"Newsreader",serif; font-size:1.45rem; font-weight:600; color:var(--ink);
+  text-align:left; margin:8px 0 4px}
+.subact span{font-family:"Inter",sans-serif; font-size:.98rem; font-weight:400; color:var(--ink-faint)}
+.figrow .gcard img{aspect-ratio:16/10}
