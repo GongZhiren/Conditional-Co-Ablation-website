@@ -200,7 +200,6 @@
     renderMath();
     buildScatter();
     bindDemo();
-    bindWake();
     bindNav();
     bindCopy();
   }
