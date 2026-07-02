@@ -12,20 +12,23 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <link rel="stylesheet" href="style.css"/>
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
+<div id="scrollbar"></div>
 <nav id="nav">
   <div class="nav-inner">
     <a class="brand" href="#top"><span class="brand-mark">Co</span>Ax</a>
     <div class="nav-links">
+      <a href="#tutorial">Tutorial</a>
       <a href="#idea">Idea</a>
-      <a href="#blindspot">Blind spot</a>
       <a href="#structure">Structure</a>
+      <a href="#circuit">Circuit</a>
       <a href="#demo">Knockout</a>
       <a href="#mechanism">Mechanism</a>
+      <a href="#general">Scale</a>
       <a href="#results">Results</a>
-      <a href="#resources">Resources</a>
     </div>
   </div>
 </nav>
@@ -44,34 +47,52 @@
     <div class="badges">
       <a class="badge primary" href="https://arxiv.org/abs/XXXX.XXXXX"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Paper</a>
       <a class="badge" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 015 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0012 2z"/></svg>Code</a>
+      <a class="badge" href="#tutorial"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Tutorial</a>
       <a class="badge" href="#bibtex"><svg viewBox="0 0 24 24"><path d="M6 4h12v16l-6-3-6 3z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>BibTeX</a>
     </div>
     <div class="headline-stat">
       <div class="stat">
-        <div class="stat-row"><span class="lab">single ablation</span><span class="v bad">0.33</span></div>
+        <div class="stat-row"><span class="lab">single ablation</span><span class="v bad" data-count="0.33">0.33</span></div>
         <div class="arrow">backup recovery ROC-AUC&nbsp;&rarr;</div>
-        <div class="stat-row"><span class="lab">CoAx (ours)</span><span class="v good">0.91</span></div>
+        <div class="stat-row"><span class="lab">CoAx (ours)</span><span class="v good" data-count="0.91">0.91</span></div>
       </div>
     </div>
   </div>
-  <div class="wrap wide hero-fig">
-    <figure class="figure">
-      <img src="assets/fig_teaser.png" alt="CoAx teaser: blind spot, per-head recovery, compensation, knockout, pruning"/>
-      <figcaption><b>CoAx exposes the self-repair backups first-order scoring misses, and the same score pays
-        off downstream (GPT-2-small).</b> (a) The documented backups sit in the first-order blind spot;
-        (b) first-order leaves them there while CoAx ranks them at the top; (c) ablating the primaries barely
-        moves the answer (the backups take over) — only removing the backups too collapses it; (d) CoAx-ordered
-        knockout matches the documented oracle while a first-order top-up overshoots; (e) repair-aware pruning
-        wins at every scale from 124M to 7B.</figcaption>
+  <div class="wrap wide hero-fig reveal">
+    <figure class="figure zoom">
+      <img src="assets/fig_teaser.png" alt="CoAx teaser"/>
+      <figcaption><b>CoAx exposes the self-repair backups first-order scoring misses, and the same score
+        pays off downstream (GPT-2-small).</b> (a) blind spot · (b) per-head recovery · (c) the backups
+        compensate · (d) knockout matches the oracle while a first-order top-up overshoots · (e) repair-aware
+        pruning wins from 124M to 7B.</figcaption>
     </figure>
   </div>
 </header>
 
 <main>
 
+<!-- ================= TUTORIAL VIDEO ================= -->
+<section id="tutorial" class="sec">
+  <div class="wrap narrow reveal">
+    <span class="kicker">Watch first</span>
+    <h2>An 80-second tutorial</h2>
+    <p class="lead center">A subtitled walkthrough of the problem, the idea, and the results — built from
+      the paper's own figures.</p>
+  </div>
+  <div class="wrap reveal">
+    <div class="video-card">
+      <video controls preload="metadata" poster="assets/fig_teaser.png" playsinline>
+        <source src="assets/tutorial.mp4" type="video/mp4"/>
+        Your browser does not support the video tag — <a href="assets/tutorial.mp4">download the tutorial</a>.
+      </video>
+    </div>
+    <p class="caption">Subtitled (no audio needed). Prefer text? Every scene below expands the same story.</p>
+  </div>
+</section>
+
 <!-- ================= IDEA ================= -->
-<section id="idea" class="sec">
-  <div class="wrap narrow">
+<section id="idea" class="sec alt">
+  <div class="wrap narrow reveal">
     <span class="kicker">The one-sentence version</span>
     <h2>Importance is <em>conditional</em>, not intrinsic</h2>
     <p class="lead">Interpretability scores a component by ablating it <em>in isolation</em>. That view
@@ -79,63 +100,83 @@
       backup takes over, so the primary looks unimportant (the model repaired the damage) and the backup
       looks unimportant too (it was silent all along). A single-ablation score misreads <em>both</em> sides
       of the redundancy — and attribution, knockout, and pruning inherit the error.</p>
-    <p class="lead">CoAx asks a different question: <b>once the primary circuit is removed, how much does
-      each remaining unit's ablation effect grow?</b> Measured in the output distribution's own (Fisher)
-      metric, the score is the growth of a unit's ablation energy under conditioning:</p>
+    <p class="lead">CoAx asks a different question — <b>once the primary circuit is removed, how much does
+      each remaining unit's ablation effect grow?</b> — measured in the output distribution's own (Fisher)
+      metric:</p>
     <div class="eq">$$\operatorname{comp}_u(S)\;=\;\underbrace{\mathcal{E}\!\big(\delta z_u \mid S\big)}_{\text{effect once }S\text{ is gone}}\;-\;\underbrace{\mathcal{E}\!\big(\delta z_u \mid \varnothing\big)}_{\text{effect alone (first order)}}$$</div>
-    <p class="lead">Large for a dormant backup, near zero otherwise — label-free, gradient-free, and
-      <em>O</em>(#heads) forward passes. The seed can come from any first-order method; CoAx
-      <b>completes</b> that circuit by returning the backups it hides.</p>
+    <p class="lead">Large for a dormant backup, near zero otherwise — label-free, gradient-free,
+      <em>O</em>(#heads) forward passes.</p>
   </div>
+  <div class="wrap reveal"><figure class="figure zoom"><img src="assets/fig_concept.png" alt="Concept"/>
+    <figcaption><b>Self-repair, conceptually.</b> Ablating the primary path wakes a dormant backup that
+      re-routes the answer; the measured effect of the primary shrinks, and the backup never showed up on
+      the intact model.</figcaption></figure></div>
 </section>
 
-<!-- ================= BLIND SPOT (interactive, real data) ================= -->
-<section id="blindspot" class="sec alt">
-  <div class="wrap">
+<!-- ================= BLIND SPOT ================= -->
+<section id="blindspot" class="sec">
+  <div class="wrap reveal">
     <span class="kicker">See it in the data</span>
     <h2>The first-order blind spot</h2>
-    <p class="lead center">Every point is one of GPT-2-small's 144 attention heads, placed by its
+    <p class="lead center">Every point is one of GPT-2-small's 144 attention heads, by its
       <b>first-order saliency</b> and its <b>CoAx score</b>. The documented backups
-      (<span class="k-back">★</span>) hide in the shaded <b>blind spot</b> — low first-order, high CoAx.
-      <span class="hint">Hover a point.</span></p>
-    <div class="plot-card">
-      <div id="scatter"></div>
+      (<span class="k-back">★</span>) hide in the shaded blind spot. <span class="hint">Hover a point.</span></p>
+    <div class="plot-card"><div id="scatter"></div>
       <div class="legend">
         <span><i class="dot other"></i>ordinary head</span>
-        <span><i class="dot primary"></i>name-mover (primary / seed)</span>
+        <span><i class="dot primary"></i>name-mover (seed)</span>
         <span><i class="star">★</i>documented backup</span>
-        <span class="legend-note">live plot · released code · GPT-2-small · 48 IOI prompts</span>
+        <span class="legend-note">live plot · released code · 48 IOI prompts</span>
       </div>
     </div>
-    <p class="caption">First-order saliency ranks the backups near the <b>bottom</b> (they are dormant);
-      conditional co-ablation ranks the same heads at the <b>top</b>. Same heads, two scores.</p>
   </div>
+  <div class="wrap wide reveal"><figure class="figure zoom"><img src="assets/fig_separation.png" alt="Separation"/>
+    <figcaption><b>The same eight backups, two scores.</b> Ranked near the bottom by first-order saliency
+      (AUC 0.33) and at the top by conditional co-ablation (AUC 0.91).</figcaption></figure></div>
 </section>
 
-<!-- ================= STRUCTURE (real figure) ================= -->
-<section id="structure" class="sec">
-  <div class="wrap wide">
+<!-- ================= STRUCTURE ================= -->
+<section id="structure" class="sec alt">
+  <div class="wrap wide reveal">
     <span class="kicker">The structure CoAx exploits</span>
     <h2>A self-repair module, and the circuit it re-wires</h2>
-    <figure class="figure">
-      <img src="assets/fig_structure.png" alt="Synergy matrix and the IOI self-repair circuit re-wiring"/>
-      <figcaption><b>The second-order structure CoAx reads (GPT-2-small).</b> (a) First-order scoring gives
-        one number per head; (b) the pairwise synergy is a whole matrix, where the name-movers and their
-        backups form a bright off-diagonal block — the <b>self-repair module</b> a per-head score cannot see.
-        (c) Intact, the primary name-movers write the answer while the backups stay dormant; (d) ablating the
-        primaries wakes the backups, which re-route to the logit — the answer survives.</figcaption>
-    </figure>
+    <figure class="figure zoom"><img src="assets/fig_structure.png" alt="Structure"/>
+      <figcaption><b>Second-order structure (GPT-2-small).</b> (a) first-order gives one number per head;
+        (b) the pairwise synergy is a whole matrix — the name-movers and their backups form a bright
+        off-diagonal block, the self-repair module a per-head score cannot see; (c,d) intact, the primaries
+        write the answer while the backups stay dormant; ablate the primaries and the backups wake and
+        re-route to the logit.</figcaption></figure>
+    <div class="figrow">
+      <figure class="figure zoom half"><img src="assets/fig_synergy_matrix.png" alt="Synergy matrix"/>
+        <figcaption>The pairwise co-ablation synergy over the IOI heads — the boxed name-mover / backup block.</figcaption></figure>
+      <figure class="figure zoom half"><img src="assets/fig_headmap.png" alt="Head map"/>
+        <figcaption>The 12×12 head grid: first-order saliency vs the CoAx score — the same inversion, spatially.</figcaption></figure>
+    </div>
   </div>
 </section>
 
-<!-- ================= KNOCKOUT (interactive) ================= -->
+<!-- ================= CIRCUIT ANATOMY ================= -->
+<section id="circuit" class="sec">
+  <div class="wrap reveal">
+    <span class="kicker">Anatomy</span>
+    <h2>The recovered circuit, drawn four ways</h2>
+    <p class="lead center">The primary write-path (orange) and the dormant backup path (blue) CoAx recovers,
+      as a functional diagram, a re-wiring, and a token×layer information-flow map.</p>
+  </div>
+  <div class="wrap wide reveal"><div class="figrow three">
+    <figure class="figure zoom"><img src="assets/fig_circuit.png" alt="Circuit"/><figcaption>Functional circuit — the backup route (blue) parallels the primaries (orange).</figcaption></figure>
+    <figure class="figure zoom"><img src="assets/fig_wiring.png" alt="Wiring"/><figcaption>Head-level re-wiring: ablating the primaries lights up the S-inhibition → backup → logit path.</figcaption></figure>
+    <figure class="figure zoom"><img src="assets/fig_routes.png" alt="Routes"/><figcaption>Token×layer information flow, with the CoAx backup route added.</figcaption></figure>
+  </div></div>
+</section>
+
+<!-- ================= KNOCKOUT DEMO ================= -->
 <section id="demo" class="sec alt">
-  <div class="wrap">
+  <div class="wrap reveal">
     <span class="kicker">Play with it</span>
     <h2>Why a knockout needs the backups</h2>
-    <p class="lead center">Ablate the “circuit” a first-order analysis returns — the three name-mover
-      primaries — and the answer barely moves: the backups silently take over. You have to remove the
-      backups too. <span class="hint">Click the buttons.</span></p>
+    <p class="lead center">Ablate the “circuit” a first-order analysis returns and the answer barely moves —
+      the backups silently take over. <span class="hint">Click the buttons.</span></p>
     <div class="demo-card">
       <div class="demo-controls">
         <button class="dbtn active" data-state="clean">Intact model</button>
@@ -153,32 +194,63 @@
         <div class="demo-explain" id="demoExplain"></div>
       </div>
     </div>
-    <p class="caption">A first-order top-up of the same size <b>overshoots</b> into the core name-movers;
-      CoAx removes <em>exactly</em> the compensators a complete knockout needs, matching the documented oracle.</p>
   </div>
 </section>
 
-<!-- ================= MECHANISM (real figure) ================= -->
+<!-- ================= MECHANISM ================= -->
 <section id="mechanism" class="sec">
-  <div class="wrap wide">
+  <div class="wrap wide reveal">
     <span class="kicker">Are they real backups?</span>
     <h2>They wake up — and the wake-up is causal</h2>
-    <figure class="figure">
-      <img src="assets/fig_mechanism.png" alt="Wake-up curves and counterfactual patching"/>
-      <figcaption><b>How the discovered backups take over (GPT-2-small).</b> As the primaries are ablated,
-        the backups grow in output norm (a) and in causal effect on the answer (b) while random heads stay
-        flat; the answer's direct logit attribution hands off to them (c); and freezing their dormant
-        activations removes <b>55%</b> of the self-repair (d) — the wake-up causally drives the repair.</figcaption>
-    </figure>
+    <figure class="figure zoom"><img src="assets/fig_mechanism.png" alt="Mechanism"/>
+      <figcaption><b>How the discovered backups take over.</b> As the primaries are ablated, the backups
+        grow in output norm (a) and causal effect (b) while random heads stay flat; the answer's direct
+        logit attribution hands off to them (c); freezing their dormant activations removes <b>55%</b> of
+        the self-repair (d).</figcaption></figure>
+    <div class="figrow">
+      <figure class="figure zoom half"><img src="assets/fig_casestudy.png" alt="Case study"/>
+        <figcaption>Anatomy of one backup head [10,6]: reads the indirect-object name, dormant on the clean model, load-bearing once conditioned.</figcaption></figure>
+      <figure class="figure zoom half"><img src="assets/fig_attn_pattern.png" alt="Attention pattern"/>
+        <figcaption>Final-position attention: the backup carries the name-mover signature (reads the IO name) while dormant.</figcaption></figure>
+    </div>
   </div>
 </section>
 
-<!-- ================= RESULTS (real figures + table) ================= -->
-<section id="results" class="sec alt">
-  <div class="wrap">
-    <span class="kicker">Results</span>
-    <h2>Recovery, generalization, and the downstream payoff</h2>
+<!-- ================= WHAT MAKES IT WORK ================= -->
+<section id="analysis" class="sec alt">
+  <div class="wrap wide reveal">
+    <span class="kicker">Under the hood</span>
+    <h2>What makes CoAx work, and what it costs</h2>
+    <div class="figrow">
+      <figure class="figure zoom half"><img src="assets/fig_method_analysis.png" alt="Method analysis"/>
+        <figcaption>Data-efficient (strong at 32 prompts), centering is the load-bearing ingredient, and the score is invariant to whether the backup writes the answer direction.</figcaption></figure>
+      <figure class="figure zoom half"><img src="assets/fig_efficiency.png" alt="Efficiency"/>
+        <figcaption>Forward-only and label-free: the conditional route recovers the second-order signal at O(#heads), far left of the explicit pairwise wall.</figcaption></figure>
+    </div>
+  </div>
+</section>
 
+<!-- ================= GENERALIZATION ================= -->
+<section id="general" class="sec">
+  <div class="wrap wide reveal">
+    <span class="kicker">Scale &amp; architecture</span>
+    <h2>The discovery generalizes, label-free</h2>
+    <figure class="figure zoom"><img src="assets/fig_generalization.png" alt="Generalization"/>
+      <figcaption><b>Two axes.</b> The IOI backups wake up across the GPT-2 family; conditional completion
+        transfers to induction on eight models from six architecture families.</figcaption></figure>
+    <div class="figrow three">
+      <figure class="figure zoom"><img src="assets/fig_crossmodel_blindspot.png" alt="Cross-model blind spot"/><figcaption>The first-order blind spot recurs across the GPT-2 family.</figcaption></figure>
+      <figure class="figure zoom"><img src="assets/fig_crossmodel_heatmap.png" alt="Cross-model heatmap"/><figcaption>Output-vs-input geometry across twelve models.</figcaption></figure>
+      <figure class="figure zoom"><img src="assets/fig_crossarch.png" alt="Cross-architecture"/><figcaption>Induction completion across six architecture families.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESULTS / PRUNING ================= -->
+<section id="results" class="sec alt">
+  <div class="wrap reveal">
+    <span class="kicker">Results</span>
+    <h2>Recovery and the downstream payoff</h2>
     <div class="rc">
       <h4>Backup recovery on GPT-2 IOI (ROC-AUC)</h4>
       <table class="rtable">
@@ -194,30 +266,23 @@
       <p class="rc-note">Every additive / self-repair-aware score falls short; the gap is the node-additive
         <em>form</em>, not a smarter gradient.</p>
     </div>
-
-    <div class="figrow">
-      <figure class="figure half">
-        <img src="assets/fig_generalization.png" alt="Generalization across scale and architecture"/>
-        <figcaption><b>Generalizes label-free.</b> The IOI backups wake up across the GPT-2 family, and
-          conditional completion transfers to induction on eight further models from six architecture families.</figcaption>
-      </figure>
-      <figure class="figure half">
-        <img src="assets/fig_applications.png" alt="Repair-aware pruning across scales"/>
-        <figcaption><b>Repair-aware pruning.</b> On four models from 124M to 7B, the self-repair-aware
-          co-ablation order stays nearest the dense model while classical and gradient baselines degrade.</figcaption>
-      </figure>
+    <div class="figrow reveal">
+      <figure class="figure zoom half"><img src="assets/fig_applications.png" alt="Pruning across scales"/>
+        <figcaption><b>Repair-aware pruning</b> stays nearest dense at every scale from 124M to 7B.</figcaption></figure>
+      <figure class="figure zoom half"><img src="assets/fig_pruning.png" alt="Pruning sweep"/>
+        <figcaption>Full perplexity sweep — the self-repair-aware order dominates weight/magnitude/gradient baselines.</figcaption></figure>
     </div>
   </div>
 </section>
 
 <!-- ================= RESOURCES ================= -->
 <section id="resources" class="sec">
-  <div class="wrap narrow">
+  <div class="wrap narrow reveal">
     <span class="kicker">Resources</span>
     <h2>Paper, code, and citation</h2>
     <div class="res-links">
       <a class="res" href="https://arxiv.org/abs/XXXX.XXXXX"><b>Paper</b><span>arXiv preprint</span></a>
-      <a class="res" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><b>Code</b><span>reference implementation + one-command reproduction of every result above</span></a>
+      <a class="res" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><b>Code</b><span>reference implementation + one-command reproduction of every result</span></a>
     </div>
     <div id="bibtex" class="bibtex">
       <div class="bib-head"><span>BibTeX</span><button id="copyBib">Copy</button></div>
@@ -236,11 +301,12 @@
 <footer>
   <div class="wrap narrow">
     <p>Conditional Co-Ablation · a mechanistic-interpretability study of self-repair.
-      Figures are from the paper; the interactive plots and every number are reproduced by the
+      Figures are from the paper; the interactive plots, the video, and every number are reproduced by the
       <a href="https://github.com/GongZhiren/Conditional-Co-Ablation">released code</a>.</p>
   </div>
 </footer>
 
+<div id="lightbox"><img id="lightbox-img" alt="figure"/></div>
 <div id="tooltip" class="tooltip"></div>
 <script defer src="data.js"></script>
 <script defer src="app.js"></script>

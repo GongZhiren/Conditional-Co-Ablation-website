@@ -1,0 +1,79 @@
+1
+00:00:04,200 --> 00:00:07,900
+Mechanistic interpretability scores a component by the effect of ablating it in isolation.
+
+2
+00:00:07,900 --> 00:00:11,600
+But transformer circuits self-repair: remove a primary head and a dormant backup takes over.
+
+3
+00:00:11,600 --> 00:00:15,300
+The primary now looks unimportant — the model repaired the damage — and so does the silent backup.
+
+4
+00:00:15,300 --> 00:00:19,000
+A first-order score is blind to both sides of the redundancy.
+
+5
+00:00:19,000 --> 00:00:22,700
+CoAx asks a conditional question: once the primary set S is removed,
+
+6
+00:00:22,700 --> 00:00:26,400
+how much does each remaining unit's ablation effect grow?
+
+7
+00:00:26,400 --> 00:00:30,100
+A dormant backup has little effect alone but a large conditional effect — label-free and gradient-free.
+
+8
+00:00:30,100 --> 00:00:33,800
+The pairwise synergy is a whole matrix: the name-movers and their backups form a bright off-diagonal block.
+
+9
+00:00:33,800 --> 00:00:37,500
+That block is the self-repair module a per-head score cannot see.
+
+10
+00:00:37,500 --> 00:00:41,200
+Intact, the primaries write the answer; ablate them and the backups wake up and re-route to the logit.
+
+11
+00:00:41,200 --> 00:00:44,900
+On the GPT-2-small IOI circuit, CoAx lifts backup recovery from 0.33 to 0.91 ROC-AUC.
+
+12
+00:00:44,900 --> 00:00:48,600
+The documented backups move from the first-order blind spot to the top of the ranking — above every baseline.
+
+13
+00:00:48,600 --> 00:00:52,300
+Ablating the primaries barely moves the answer; only removing the backups too collapses it.
+
+14
+00:00:52,300 --> 00:00:56,000
+As the primaries are ablated, the backups grow in output norm and start writing the answer,
+
+15
+00:00:56,000 --> 00:00:59,700
+while matched random heads stay flat.
+
+16
+00:00:59,700 --> 00:01:03,400
+Freezing the backups to their dormant value removes 55% of the self-repair — the wake-up is causal.
+
+17
+00:01:03,400 --> 00:01:07,100
+The discovery is label-free and generalizes beyond IOI:
+
+18
+00:01:07,100 --> 00:01:10,800
+conditional completion transfers to the induction circuit across eight further models and six architecture families.
+
+19
+00:01:10,800 --> 00:01:14,500
+The recovered backups also repair the tools built on the same primitive:
+
+20
+00:01:14,500 --> 00:01:18,200
+attribution, capability knockout, and repair-aware pruning that wins at every scale from 124M to 7B.
