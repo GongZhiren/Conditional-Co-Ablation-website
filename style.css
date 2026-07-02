@@ -1,0 +1,194 @@
+/* ============================================================
+   CoAx project page — clean academic style, blue accent (#2e6fb0)
+   ============================================================ */
+:root{
+  --ink:#16202b; --ink-soft:#4a586b; --ink-faint:#8592a3;
+  --line:#e7ebf1; --line-soft:#eef2f7;
+  --bg:#ffffff; --bg-alt:#f6f8fc; --bg-card:#ffffff;
+  --blue:#2e6fb0; --blue-deep:#1f5591; --blue-wash:#eaf2fb;
+  --orange:#d98a2b; --gold:#e3a52a; --green:#2f8f66; --red:#c15743;
+  --radius:14px; --shadow:0 1px 2px rgba(20,32,43,.04),0 8px 30px rgba(20,32,43,.06);
+  --maxw:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:74px}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:17px; line-height:1.68; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue); text-decoration:none}
+a:hover{color:var(--blue-deep)}
+em{font-style:italic; color:var(--blue-deep); font-weight:500}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+.wrap.narrow{max-width:760px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.82em; color:var(--ink-faint); font-weight:400}
+
+/* ---------------- nav ---------------- */
+#nav{position:sticky; top:0; z-index:50; background:rgba(255,255,255,.82);
+  backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--maxw); margin:0 auto; padding:0 24px; height:58px;
+  display:flex; align-items:center; justify-content:space-between}
+.brand{font-weight:800; font-size:1.28rem; letter-spacing:-.02em; color:var(--ink)}
+.brand-mark{color:var(--blue)}
+.nav-links{display:flex; gap:24px}
+.nav-links a{color:var(--ink-soft); font-weight:500; font-size:.94rem; position:relative}
+.nav-links a:hover,.nav-links a.active{color:var(--blue)}
+.nav-links a.active::after{content:""; position:absolute; left:0; right:0; bottom:-19px; height:2px; background:var(--blue)}
+
+/* ---------------- hero ---------------- */
+.hero{padding:76px 0 54px; background:
+  radial-gradient(60% 120% at 50% -10%, var(--blue-wash), transparent 60%), var(--bg);
+  border-bottom:1px solid var(--line); text-align:center}
+.tag{display:inline-block; font-size:.8rem; font-weight:600; letter-spacing:.02em;
+  color:var(--blue-deep); background:var(--blue-wash); padding:6px 14px; border-radius:999px; margin-bottom:22px}
+.hero h1{font-family:"Newsreader",Georgia,serif; font-weight:600; font-size:3.4rem;
+  line-height:1.08; letter-spacing:-.02em; margin:0 0 16px}
+.subtitle{font-size:1.24rem; color:var(--ink-soft); max-width:720px; margin:0 auto 26px; line-height:1.5}
+.subtitle em{color:var(--blue-deep)}
+.authors{display:flex; flex-wrap:wrap; gap:6px 22px; justify-content:center; font-weight:600; font-size:1.02rem}
+.authors span::after{content:""}
+.affil{color:var(--ink-faint); margin-top:6px; font-size:.98rem}
+.badges{display:flex; gap:12px; justify-content:center; margin:30px 0 8px; flex-wrap:wrap}
+.badge{display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:999px;
+  border:1px solid var(--line); background:#fff; color:var(--ink); font-weight:600; font-size:.95rem;
+  box-shadow:var(--shadow); transition:transform .12s ease, border-color .12s ease}
+.badge:hover{transform:translateY(-2px); border-color:var(--blue); color:var(--ink)}
+.badge svg{width:18px; height:18px; fill:currentColor}
+.badge.primary{background:var(--blue); color:#fff; border-color:var(--blue)}
+.badge.primary:hover{background:var(--blue-deep); color:#fff}
+
+.headline-stat{margin:44px auto 0; max-width:640px}
+.stat{display:flex; align-items:center; justify-content:center; gap:26px; flex-wrap:wrap;
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:22px 28px; box-shadow:var(--shadow)}
+.stat-row{display:flex; flex-direction:column; align-items:center}
+.stat .lab{font-size:.82rem; color:var(--ink-faint); font-weight:500; text-transform:uppercase; letter-spacing:.04em}
+.stat .v{font-family:"Newsreader",serif; font-size:2.7rem; font-weight:600; line-height:1}
+.stat .v.bad{color:var(--red)} .stat .v.good{color:var(--blue)}
+.stat .arrow{font-size:.86rem; color:var(--ink-soft); font-weight:600; max-width:130px; text-align:center}
+.stat-cap{font-size:.97rem; color:var(--ink-soft); margin:18px 4px 0; line-height:1.55}
+.repro{color:var(--ink-faint)}
+
+/* ---------------- sections ---------------- */
+.sec{padding:70px 0; border-bottom:1px solid var(--line)}
+.sec.alt{background:var(--bg-alt)}
+.kicker{display:block; text-align:center; color:var(--blue); font-weight:700; font-size:.82rem;
+  letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px}
+.sec h2{font-family:"Newsreader",serif; font-weight:600; font-size:2.2rem; text-align:center;
+  letter-spacing:-.01em; margin:0 0 26px; line-height:1.15}
+.lead{font-size:1.08rem; color:var(--ink-soft); margin:0 0 18px}
+.lead.center{text-align:center; max-width:820px; margin-left:auto; margin-right:auto}
+.hint{color:var(--blue); font-weight:600; font-size:.92em}
+.caption{text-align:center; color:var(--ink-faint); font-size:.94rem; max-width:820px; margin:22px auto 0; line-height:1.55}
+
+/* equation */
+.eq{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:14px 18px;
+  margin:14px 0 26px; overflow-x:auto; box-shadow:var(--shadow); text-align:center}
+
+/* cards */
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:6px 0 24px}
+.card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow)}
+.card h4{margin:0 0 8px; font-size:1.05rem; color:var(--blue-deep)}
+.card p{margin:0; font-size:.98rem; color:var(--ink-soft)}
+
+/* ---------------- scatter plot ---------------- */
+.plot-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+  padding:20px; box-shadow:var(--shadow); max-width:760px; margin:6px auto 0}
+#scatter{width:100%}
+#scatter svg{width:100%; height:auto; display:block}
+.legend{display:flex; flex-wrap:wrap; gap:8px 22px; justify-content:center; align-items:center;
+  margin-top:12px; font-size:.9rem; color:var(--ink-soft)}
+.legend .dot{width:11px; height:11px; border-radius:50%; display:inline-block; margin-right:6px; vertical-align:-1px}
+.legend .dot.other{background:#c3ccd8} .legend .dot.primary{background:var(--orange)}
+.legend .star{color:var(--blue); margin-right:5px; font-size:1.05em}
+.legend-note{color:var(--ink-faint); font-size:.82rem}
+.k-back{color:var(--blue); font-weight:700}
+
+/* ---------------- demo (knockout) ---------------- */
+.demo-card,.wake-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); max-width:820px; margin:6px auto 0; overflow:hidden}
+.demo-controls{display:flex; flex-wrap:wrap; gap:8px; padding:18px 22px; border-bottom:1px solid var(--line-soft); background:var(--bg-alt)}
+.dbtn{border:1px solid var(--line); background:#fff; color:var(--ink-soft); font-weight:600; font-size:.92rem;
+  padding:9px 16px; border-radius:9px; cursor:pointer; transition:all .14s ease; font-family:inherit}
+.dbtn:hover{border-color:var(--blue); color:var(--blue)}
+.dbtn.active{background:var(--blue); color:#fff; border-color:var(--blue)}
+.demo-body{padding:26px 26px 30px; display:grid; grid-template-columns:1.3fr 1fr; gap:28px; align-items:center}
+.gauge-label{font-size:.9rem; font-weight:600; color:var(--ink-soft); margin-bottom:8px}
+.bar-track{position:relative; height:30px; background:var(--bg-alt); border-radius:8px; overflow:hidden; border:1px solid var(--line-soft)}
+.bar-fill{position:absolute; left:0; top:0; bottom:0; width:0;
+  background:linear-gradient(90deg,var(--blue),#4a8ccb); border-radius:8px; transition:width .7s cubic-bezier(.22,1,.36,1)}
+.bar-fill.acc{background:linear-gradient(90deg,#2f8f66,#57b489)}
+.bar-val{position:absolute; right:10px; top:50%; transform:translateY(-50%); font-family:"JetBrains Mono",monospace;
+  font-size:.9rem; font-weight:600; color:var(--ink)}
+.demo-explain{font-size:.98rem; color:var(--ink-soft); line-height:1.55; min-height:96px}
+.demo-explain b{color:var(--ink)}
+.demo-explain .verdict{display:inline-block; font-weight:700; margin-bottom:6px}
+.verdict.ok{color:var(--green)} .verdict.warn{color:var(--red)} .verdict.mid{color:var(--blue-deep)}
+
+/* ---------------- wake-up ---------------- */
+.wake-slider{padding:20px 24px 6px; text-align:center}
+.wake-slider label{font-weight:600; color:var(--ink-soft); font-size:.96rem}
+.wake-slider b{color:var(--blue); font-size:1.1rem}
+input[type=range]{-webkit-appearance:none; appearance:none; width:min(420px,80%); height:6px; border-radius:6px;
+  background:var(--line); margin:14px auto 0; display:block; cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+  background:var(--blue); border:3px solid #fff; box-shadow:var(--shadow); cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--blue); border:3px solid #fff; cursor:pointer}
+.wake-gauges{display:grid; grid-template-columns:1fr 1fr; gap:24px; padding:16px 30px 30px}
+.wg-title{font-size:.9rem; font-weight:600; color:var(--ink-soft); margin-bottom:10px; text-align:center; min-height:40px}
+.wg svg{width:100%; height:auto; display:block}
+
+/* ---------------- results ---------------- */
+.results-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:22px; max-width:940px; margin:0 auto}
+.rc{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow)}
+.rc h4{margin:0 0 14px; font-size:1.08rem}
+.rtable{width:100%; border-collapse:collapse; font-size:.96rem}
+.rtable th{text-align:left; color:var(--ink-faint); font-weight:600; font-size:.82rem; text-transform:uppercase;
+  letter-spacing:.03em; padding:6px 8px; border-bottom:2px solid var(--line)}
+.rtable td{padding:9px 8px; border-bottom:1px solid var(--line-soft)}
+.rtable td:last-child{text-align:right; font-family:"JetBrains Mono",monospace; font-weight:600}
+.rtable tr.win td{background:var(--blue-wash)}
+.rtable tr.win td:last-child{color:var(--blue-deep)}
+.ord{display:inline-block; font-size:.68rem; font-weight:700; color:var(--ink-faint); border:1px solid var(--line);
+  border-radius:4px; padding:0 4px; margin-left:6px; vertical-align:1px}
+.ord.ours{color:var(--blue); border-color:var(--blue)}
+.rc-note{font-size:.9rem; color:var(--ink-faint); margin:14px 0 0; line-height:1.5}
+.rc.mini{display:flex; flex-direction:column; gap:2px}
+.mini-stat{display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--line-soft)}
+.ms-num{font-family:"Newsreader",serif; font-size:2rem; font-weight:600; color:var(--blue); min-width:74px}
+.ms-lab{font-size:.9rem; color:var(--ink-soft); font-weight:600; line-height:1.3}
+.ms-lab span{color:var(--ink-faint); font-weight:400; font-size:.85rem}
+
+/* ---------------- resources / bibtex ---------------- */
+.res-links{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:8px 0 26px}
+.res{display:flex; flex-direction:column; gap:3px; padding:18px 22px; border:1px solid var(--line);
+  border-radius:var(--radius); background:#fff; box-shadow:var(--shadow); transition:transform .12s, border-color .12s}
+.res:hover{transform:translateY(-2px); border-color:var(--blue)}
+.res b{font-size:1.05rem; color:var(--ink)} .res span{font-size:.9rem; color:var(--ink-faint)}
+.bibtex{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow)}
+.bib-head{display:flex; justify-content:space-between; align-items:center; padding:10px 16px;
+  background:var(--bg-alt); border-bottom:1px solid var(--line); font-weight:600; font-size:.9rem; color:var(--ink-soft)}
+#copyBib{border:1px solid var(--line); background:#fff; color:var(--blue); font-weight:600; font-size:.84rem;
+  padding:5px 14px; border-radius:7px; cursor:pointer; font-family:inherit}
+#copyBib:hover{background:var(--blue); color:#fff; border-color:var(--blue)}
+.bibtex pre{margin:0; padding:18px; font-family:"JetBrains Mono",monospace; font-size:.82rem; line-height:1.6;
+  color:var(--ink); overflow-x:auto; background:#fff}
+
+/* ---------------- footer + tooltip ---------------- */
+footer{padding:34px 0; text-align:center}
+footer p{color:var(--ink-faint); font-size:.9rem; margin:0}
+.tooltip{position:fixed; pointer-events:none; opacity:0; transform:translate(-50%,-115%);
+  background:var(--ink); color:#fff; padding:7px 11px; border-radius:8px; font-size:.82rem; font-weight:500;
+  font-family:"JetBrains Mono",monospace; white-space:nowrap; z-index:100; transition:opacity .1s; box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.tooltip.show{opacity:1}
+
+/* ---------------- responsive ---------------- */
+@media (max-width:820px){
+  body{font-size:16px}
+  .nav-links{display:none}
+  .hero h1{font-size:2.5rem}
+  .subtitle{font-size:1.08rem}
+  .two-col,.results-grid,.res-links,.wake-gauges,.demo-body{grid-template-columns:1fr}
+  .sec h2{font-size:1.7rem}
+  .stat .v{font-size:2.2rem}
+}
