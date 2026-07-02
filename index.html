@@ -249,9 +249,9 @@
       <div class="demo-body">
         <div class="gauge">
           <div class="gauge-label">IOI answer margin <span class="mono">(% of intact)</span></div>
-          <div class="bar-track"><div id="marginBar" class="bar-fill"></div><div class="bar-val" id="marginVal">2.53</div></div>
-          <div class="gauge-label" style="margin-top:18px">Task accuracy</div>
-          <div class="bar-track"><div id="accBar" class="bar-fill acc"></div><div class="bar-val" id="accVal">1.00</div></div>
+          <div class="bar-track"><div id="marginBar" class="bar-fill"></div><div class="bar-val" id="marginVal">100%</div></div>
+          <div class="gauge-label" style="margin-top:18px">Task accuracy <span class="mono">(% correct)</span></div>
+          <div class="bar-track"><div id="accBar" class="bar-fill acc"></div><div class="bar-val" id="accVal">100%</div></div>
         </div>
         <div class="demo-explain" id="demoExplain"></div>
       </div>
@@ -259,10 +259,12 @@
   </div>
 
   <div class="wrap narrow"><h3 class="subact reveal">Repair-aware pruning <span>· the removal order that keeps backups</span></h3></div>
-  <div class="wrap reveal"><div class="figrow">
-    <figure class="gcard"><img src="assets/fig_applications.png" alt="Pruning across scales"><figcaption>Perplexity vs. heads pruned — the co-ablation order (blue) stays nearest dense, 124M&ndash;7B.</figcaption></figure>
-    <figure class="gcard"><img src="assets/fig_pruning.png" alt="Full pruning sweep"><figcaption>Full sparsity sweep — it dominates weight-, magnitude-, and gradient-based baselines.</figcaption></figure>
-  </div></div>
+  <div class="wrap wide reveal">
+    <figure class="figure zoom"><img src="assets/fig_applications.png" alt="Pruning across scales"/>
+      <figcaption><b>WikiText-2 perplexity vs. heads pruned, 124M&ndash;7B.</b> Re-measuring the score as heads
+        are removed gives a repair-aware order (blue) that stays nearest the dense model at every scale,
+        dominating random, magnitude, Wanda, Taylor, and the static co-ablation order.</figcaption></figure>
+  </div>
   <p class="flow reveal">One circuit, one model — does the phenomenon hold more broadly?</p>
 </section>
 

@@ -105,10 +105,12 @@
   };
   function setDemo(state) {
     const d = DEMO[state];
-    document.getElementById("marginBar").style.width = Math.min(100, d.margin / 2.53 * 100) + "%";
-    document.getElementById("marginVal").textContent = (state === "own" ? "≈" : "") + d.margin.toFixed(2);
-    document.getElementById("accBar").style.width = (d.acc * 100) + "%";
-    document.getElementById("accVal").textContent = d.acc.toFixed(2);
+    const mpct = Math.round(Math.min(100, d.margin / 2.53 * 100));
+    const apct = Math.round(d.acc * 100);
+    document.getElementById("marginBar").style.width = mpct + "%";
+    document.getElementById("marginVal").textContent = (state === "own" ? "≈" : "") + mpct + "%";
+    document.getElementById("accBar").style.width = apct + "%";
+    document.getElementById("accVal").textContent = apct + "%";
     document.getElementById("demoExplain").innerHTML =
       `<span class="verdict ${d.cls}">${d.title}</span><br>${d.html}`;
     document.querySelectorAll(".dbtn").forEach((b) => b.classList.toggle("active", b.dataset.state === state));
