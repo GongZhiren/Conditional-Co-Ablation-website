@@ -1,63 +1,59 @@
 1
-00:00:07,370 --> 00:00:18,580
-Interpretability explains a model by finding the circuit behind a behavior, scoring each component by the effect of ablating it in isolation.
+00:00:00,000 --> 00:00:07,150
+Let's understand Conditional Co-Ablation — a method for finding the hidden backup parts of a model's reasoning.
 
 2
-00:00:18,580 --> 00:00:27,750
-But transformer circuits self-repair. Remove a primary head, and a dormant backup silently takes over.
+00:00:07,150 --> 00:00:11,310
+A language model reads a sentence and predicts the next word.
 
 3
-00:00:27,750 --> 00:00:39,970
-Now the primary looks unimportant, because the model repaired the damage; and the backup looks unimportant too, because it was silent all along.
+00:00:11,310 --> 00:00:17,950
+Inside, small components called attention heads each carry out a little piece of that computation.
 
 4
-00:00:39,970 --> 00:00:45,350
-A first-order score is blind to both sides of this redundancy.
+00:00:17,950 --> 00:00:22,170
+The few heads that actually drive a behavior are called its circuit.
 
 5
-00:00:45,350 --> 00:00:49,720
-CoAx asks a conditional question instead.
+00:00:22,170 --> 00:00:27,820
+To find them, we normally delete one component and watch how much the answer changes.
 
 6
-00:00:49,720 --> 00:00:57,310
-Once the primary set S is removed, how much does each remaining unit's ablation effect grow?
+00:00:27,820 --> 00:00:33,860
+But here is the trap. Delete an important head, and a dormant backup silently takes over.
 
 7
-00:00:57,310 --> 00:01:09,070
-A dormant backup has almost no effect alone, but a large effect once its primary is gone. The score is label free and needs only forward passes.
+00:00:33,860 --> 00:00:44,320
+The answer barely moves — so the deleted head looks unimportant, and the backup, silent before, looks unimportant too. We miss both.
 
 8
-00:01:09,070 --> 00:01:19,300
-The pairwise interaction between heads forms a matrix, and the name-movers and their backups light up as a dense off-diagonal block.
+00:00:44,320 --> 00:00:52,470
+CoAx asks a smarter question. After we remove the main parts, how much does each remaining unit's effect grow?
 
 9
-00:01:19,300 --> 00:01:26,720
-That block is the self-repair module, invisible to any score that reads one head at a time.
+00:00:52,470 --> 00:01:00,610
+A backup does almost nothing on its own, but a lot once its partner is gone. It needs no labels and no gradients.
 
 10
-00:01:26,720 --> 00:01:35,770
-Intact, the primaries write the answer; ablate them, and the backups wake up and re-route to the output.
+00:01:00,610 --> 00:01:08,400
+The interactions between heads reveal a hidden module: the main heads and their backups, wired in parallel.
 
 11
-00:01:35,770 --> 00:01:49,550
-On the GPT-2 IOI circuit, CoAx lifts backup recovery from 0.33 to 0.91 ROC-AUC, above every baseline.
+00:01:08,400 --> 00:01:18,950
+It works. On a circuit with known backups, CoAx lifts discovery from 0.33 to 0.91, far above every baseline.
 
 12
-00:01:49,550 --> 00:02:01,310
-Ablating the primary circuit barely changes behavior. Adding the CoAx backups is what removes the capability, matching the documented oracle.
+00:01:18,950 --> 00:01:25,000
+And they really are backups: remove the main heads, and these wake up and start writing the answer.
 
 13
-00:02:01,310 --> 00:02:13,650
-A first-order top-up overshoots into the core heads; and the same order gives repair-aware pruning that wins from 124 million to 7 billion parameters.
+00:01:25,000 --> 00:01:30,580
+Freezing them undoes the repair — proof that they cause it, not just correlate with it.
 
 14
-00:02:13,650 --> 00:02:23,950
-As the primaries are ablated, the discovered heads grow in output norm and start writing the answer, while random heads stay flat.
+00:01:30,580 --> 00:01:40,150
+This matters wherever the blind spot hides: attribution, capability removal, and pruning are all repaired by the recovered backups.
 
 15
-00:02:23,950 --> 00:02:33,890
-Freezing the backups to their dormant value removes fifty-five percent of the self-repair. Their wake-up causally drives the repair.
-
-16
-00:02:33,890 --> 00:02:46,780
-The discovery is label-free and generalizes: conditional completion transfers to the induction circuit across eight further models and six architecture families.
+00:01:40,150 --> 00:01:49,890
+So a component's importance is not fixed — it is conditional. Code, an interactive page, and the paper are linked on screen.
