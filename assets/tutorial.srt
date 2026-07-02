@@ -3,105 +3,153 @@
 Let's understand Conditional Co-Ablation — a way to find the hidden backup parts of a model's reasoning, from the ground up.
 
 2
-00:00:08,280 --> 00:00:12,440
-A language model reads a sentence and predicts the next word.
+00:00:08,280 --> 00:00:12,200
+First, the problem — and why it has stayed hidden.
 
 3
-00:00:12,440 --> 00:00:19,080
-Inside, small components called attention heads each carry out a little piece of that computation.
+00:00:12,200 --> 00:00:16,360
+A language model reads a sentence and predicts the next word.
 
 4
-00:00:19,080 --> 00:00:24,070
-Here, a few heads copy the name Mary to the output as the prediction.
+00:00:16,360 --> 00:00:23,000
+Inside, small components called attention heads each carry out a little piece of that computation.
 
 5
-00:00:24,070 --> 00:00:28,390
-The specific heads that carry one behavior are called its circuit.
+00:00:23,000 --> 00:00:27,990
+Here, a few heads copy the name Mary to the output as the prediction.
 
 6
-00:00:28,390 --> 00:00:36,260
-To find them, researchers delete a component and watch how much the answer changes. A big drop means it mattered.
+00:00:27,990 --> 00:00:32,310
+The specific heads that carry one behavior are called its circuit.
 
 7
-00:00:36,260 --> 00:00:39,500
-But here is the trap that motivates our work.
+00:00:32,310 --> 00:00:40,180
+To find them, researchers delete a component and watch how much the answer changes. A big drop means it mattered.
 
 8
-00:00:39,500 --> 00:00:45,450
-Delete an important head, and a dormant backup silently takes over and re-routes the answer.
+00:00:40,180 --> 00:00:43,420
+But here is the trap that motivates our work.
 
 9
-00:00:45,450 --> 00:00:54,830
-The output barely changes. So the deleted head looks unimportant — and the backup, silent before, looks unimportant too.
+00:00:43,420 --> 00:00:49,370
+Delete an important head, and a dormant backup silently takes over and re-routes the answer.
 
 10
-00:00:54,830 --> 00:01:00,980
-Deleting a group is not the sum of deleting its parts, and standard scoring misses both sides.
+00:00:49,370 --> 00:00:58,750
+The output barely changes. So the deleted head looks unimportant — and the backup, silent before, looks unimportant too.
 
 11
-00:01:00,980 --> 00:01:05,800
-CoAx fixes this with one idea: don't score a unit on its own.
+00:00:58,750 --> 00:01:04,900
+Deleting a group is not the sum of deleting its parts, and standard scoring misses both sides.
 
 12
-00:01:05,800 --> 00:01:10,890
-Score how much its effect grows once the main parts have already been removed.
+00:01:04,900 --> 00:01:14,620
+This is not a curiosity. Interpretability is used to attribute behavior, to remove unwanted capabilities, and to prune models.
 
 13
-00:01:10,890 --> 00:01:15,760
-A backup does almost nothing by itself — its effect is near zero.
+00:01:14,620 --> 00:01:20,570
+When the importance score is wrong, every one of those tools inherits the same blind spot.
 
 14
-00:01:15,760 --> 00:01:25,430
-But once its partner is removed, its effect becomes large. That growth is the CoAx score, and it needs no labels and no gradients.
+00:01:20,570 --> 00:01:22,960
+So we change what we measure.
 
 15
-00:01:25,430 --> 00:01:30,360
-Measured over every pair of heads, the interactions reveal a hidden module:
+00:01:22,960 --> 00:01:27,780
+CoAx fixes this with one idea: don't score a unit on its own.
 
 16
-00:01:30,360 --> 00:01:37,850
-the main heads and their backups, wired in parallel — exactly what a one-head-at-a-time score cannot see.
+00:01:27,780 --> 00:01:32,870
+Score how much its effect grows once the main parts have already been removed.
 
 17
-00:01:37,850 --> 00:01:45,190
-So does it work? On a circuit with known backups, we rank all the heads and check the eight documented ones.
+00:01:32,870 --> 00:01:37,740
+A backup does almost nothing by itself — its effect is near zero.
 
 18
-00:01:45,190 --> 00:01:54,880
-Single-ablation scoring sits below chance at 0.33; even gradient methods built for self-repair top out at 0.82.
+00:01:37,740 --> 00:01:47,410
+But once its partner is removed, its effect becomes large. That growth is the CoAx score, and it needs no labels and no gradients.
 
 19
-00:01:54,880 --> 00:02:01,380
-CoAx reaches 0.91 — moving the backups from the blind spot to the top of the ranking.
+00:01:47,410 --> 00:01:52,400
+For the simplest case — a pair of heads — there is a companion signal.
 
 20
-00:02:01,380 --> 00:02:10,140
-And they really are backups. As we remove the main heads one by one, the discovered heads wake up and start writing the answer,
+00:01:52,400 --> 00:02:03,900
+Ablate each alone and little happens; ablate them together and the effect is far larger than the sum. That gap, the synergy, flags mutually-compensating pairs.
 
 21
-00:02:10,140 --> 00:02:18,120
-while random heads stay flat. Freezing them undoes the repair — proof they cause it, not just correlate with it.
+00:02:03,900 --> 00:02:08,830
+Measured over every pair of heads, the interactions reveal a hidden module:
 
 22
-00:02:18,120 --> 00:02:29,030
-Zoom into a single backup: it is silent on the clean model, yet it already reads the correct name, and becomes load-bearing only once its primary is gone.
+00:02:08,830 --> 00:02:16,320
+the main heads and their backups, wired in parallel — exactly what a one-head-at-a-time score cannot see.
 
 23
-00:02:29,030 --> 00:02:33,080
-This blind spot hides inside the tools everyone uses.
+00:02:16,320 --> 00:02:20,480
+Now, the evidence — starting where we have ground truth.
 
 24
-00:02:33,080 --> 00:02:47,080
-Fed the recovered backups, attribution, capability removal, and pruning are all repaired — pruning here wins at every scale, from 124 million to 7 billion parameters.
+00:02:20,480 --> 00:02:26,300
+On a circuit with documented backups, we rank all the heads and check the eight known ones.
 
 25
-00:02:47,080 --> 00:02:58,370
-And it is not one lucky circuit: the same label-free method transfers to a second circuit, induction, across eight further models and six architecture families.
+00:02:26,300 --> 00:02:35,990
+Single-ablation scoring sits below chance at 0.33; even gradient methods built for self-repair top out at 0.82.
 
 26
-00:02:58,370 --> 00:03:02,750
-So a component's importance is not fixed — it is conditional.
+00:02:35,990 --> 00:02:42,490
+CoAx reaches 0.91 — moving the backups from the blind spot to the top of the ranking.
 
 27
-00:03:02,750 --> 00:03:13,040
+00:02:42,490 --> 00:02:52,850
+Head by head, it is the same eight backups seen two ways: near the bottom under first-order saliency, and at the top under conditional co-ablation.
+
+28
+00:02:52,850 --> 00:03:03,510
+And they really are backups. As we remove the main heads one by one, the discovered heads wake up and start writing the answer, while random heads stay flat.
+
+29
+00:03:03,510 --> 00:03:13,480
+The answer's direct attribution hands off to them, and freezing their dormant activations removes fifty-five percent of the self-repair — proof they cause it.
+
+30
+00:03:13,480 --> 00:03:24,390
+Zoom into a single backup: it is silent on the clean model, yet it already reads the correct name, and becomes load-bearing only once its primary is gone.
+
+31
+00:03:24,390 --> 00:03:29,120
+Because they are load-bearing, the recovered backups repair the tools.
+
+32
+00:03:29,120 --> 00:03:38,110
+Take attribution. Ablating the primaries alone changes the answer by only 0.22 — self-repair hides the rest.
+
+33
+00:03:38,110 --> 00:03:45,730
+Add the recovered backups and the true effect, 1.76, reappears: the part the redundancy masked.
+
+34
+00:03:45,730 --> 00:03:57,430
+And re-measuring the score as heads are removed gives a repair-aware pruning order that stays nearest the dense model, from 124 million to 7 billion parameters.
+
+35
+00:03:57,430 --> 00:04:02,150
+Finally — is it one lucky circuit, or a general phenomenon?
+
+36
+00:04:02,150 --> 00:04:11,140
+The same label-free method transfers to a second circuit, induction, across eight further models and six architecture families.
+
+37
+00:04:11,140 --> 00:04:24,170
+It is honest about scope: where redundancy is shared among co-firing heads, input-side methods find them too, and on MLP-dominated circuits the head-level signal does not transfer.
+
+38
+00:04:24,170 --> 00:04:28,550
+So a component's importance is not fixed — it is conditional.
+
+39
+00:04:28,550 --> 00:04:38,840
 The parts that matter most are often the ones that stay silent until they are needed. Code, an interactive page, and the paper are linked on screen.
