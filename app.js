@@ -241,7 +241,7 @@
   function bindLightbox() {
     const box = document.getElementById("lightbox"), img = document.getElementById("lightbox-img");
     if (!box) return;
-    document.querySelectorAll(".figure.zoom img").forEach((im) => {
+    document.querySelectorAll(".figure.zoom img, .gcard img").forEach((im) => {
       im.addEventListener("click", () => { img.src = im.src; box.classList.add("open"); });
     });
     box.addEventListener("click", () => box.classList.remove("open"));

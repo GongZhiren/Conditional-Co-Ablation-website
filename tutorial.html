@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tutorial — Conditional Co-Ablation (CoAx)</title>
+<meta name="description" content="A narrated three-minute video tutorial on Conditional Co-Ablation: recovering self-repair backups in transformer circuits."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">Co</span>Ax</a>
+    <div class="nav-links">
+      <a href="index.html">&larr; Project page</a>
+      <a href="https://github.com/GongZhiren/Conditional-Co-Ablation">Code</a>
+      <a href="https://arxiv.org/abs/XXXX.XXXXX">Paper</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero tut-hero">
+  <div class="wrap narrow">
+    <div class="tag">Video tutorial · 3 minutes</div>
+    <h1>A three-minute tour of CoAx</h1>
+    <p class="subtitle">Narrated and subtitled — the problem, the idea, and the results, built from the
+      paper's own figures.</p>
+  </div>
+</header>
+
+<main>
+<section class="sec">
+  <div class="wrap">
+    <div class="tut-grid">
+      <div class="video-card">
+        <video id="vid" controls preload="metadata" poster="assets/fig_teaser.png" playsinline>
+          <source src="assets/tutorial.mp4" type="video/mp4"/>
+          <track kind="captions" src="assets/tutorial.vtt" srclang="en" label="English" default/>
+          Your browser does not support the video tag — <a href="assets/tutorial.mp4">download the tutorial</a>.
+        </video>
+      </div>
+      <aside class="chapters">
+        <h4>Chapters</h4>
+        <ul>
+          <li><button data-t="0"><span>0:00</span> Introduction</button></li>
+          <li><button data-t="7"><span>0:07</span> The problem: self-repair</button></li>
+          <li><button data-t="45"><span>0:45</span> The idea: conditional growth</button></li>
+          <li><button data-t="69"><span>1:09</span> The self-repair module</button></li>
+          <li><button data-t="95"><span>1:35</span> Recovery: 0.33 &rarr; 0.91</button></li>
+          <li><button data-t="133"><span>2:13</span> Are they real backups?</button></li>
+          <li><button data-t="153"><span>2:33</span> Generalization &amp; takeaway</button></li>
+        </ul>
+        <p class="chap-note">Captions are on by default; audio is a synthesized narration. Download:
+          <a href="assets/tutorial.mp4">MP4</a> · <a href="assets/tutorial.srt">SRT</a></p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt">
+  <div class="wrap narrow">
+    <span class="kicker">In three minutes you'll see</span>
+    <h2>What the tutorial covers</h2>
+    <div class="takeaways">
+      <div class="tk"><div class="tk-n">1</div><p><b>Why first-order fails.</b> Self-repair makes a
+        dormant backup absorb the damage, so both the primary and the backup look unimportant.</p></div>
+      <div class="tk"><div class="tk-n">2</div><p><b>The conditional-growth score.</b> How much each
+        unit's ablation effect grows once the primary set is removed — label-free, gradient-free.</p></div>
+      <div class="tk"><div class="tk-n">3</div><p><b>That it works and matters.</b> 0.33&rarr;0.91 backup
+        recovery, a causal wake-up, and repair-aware attribution, knockout, and pruning.</p></div>
+    </div>
+    <div class="res-links" style="margin-top:26px">
+      <a class="res" href="index.html"><b>Full project page</b><span>interactive figures &amp; analysis</span></a>
+      <a class="res" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><b>Code</b><span>reproduce every result</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap narrow"><p>Conditional Co-Ablation · <a href="index.html">project page</a> ·
+  <a href="https://github.com/GongZhiren/Conditional-Co-Ablation">code</a></p></div></footer>
+
+<script>
+  const v=document.getElementById('vid');
+  document.querySelectorAll('.chapters button').forEach(b=>b.addEventListener('click',()=>{
+    v.currentTime=+b.dataset.t; v.play().catch(()=>{});
+    document.querySelectorAll('.chapters button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    v.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
+</script>
+</body>
+</html>

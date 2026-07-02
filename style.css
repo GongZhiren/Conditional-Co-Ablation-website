@@ -220,3 +220,60 @@ footer p{color:var(--ink-faint); font-size:.9rem; margin:0}
   .sec h2{font-size:1.7rem}
   .stat .v{font-size:2.2rem}
 }
+
+/* ================= narrative redesign ================= */
+.thesis{max-width:750px; margin:46px auto 4px; padding:0 24px; text-align:center;
+  font-family:"Newsreader",serif; font-size:1.42rem; line-height:1.5; color:var(--ink)}
+.thesis em{color:var(--blue-deep); font-style:italic}
+.act-head{display:flex; gap:20px; align-items:flex-start; margin-bottom:16px}
+.act-n{font-family:"Newsreader",serif; font-size:2.5rem; font-weight:600; color:var(--blue);
+  line-height:.9; opacity:.45; min-width:56px}
+.act-head>div{flex:1}
+.act-head .kicker{text-align:left; margin:2px 0 4px}
+.act-head h2{text-align:left; margin:0}
+.split{display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:center; max-width:1080px; margin:0 auto}
+.split-text h4{margin:0 0 10px; font-size:1.12rem; color:var(--blue-deep)}
+.split-text p{margin:0 0 12px; color:var(--ink-soft); font-size:1.02rem}
+.split-text p:last-child{margin-bottom:0}
+.split-fig{margin:0}
+.split .plot-card{margin:0}
+.cards3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:10px}
+.flow{text-align:center; max-width:720px; margin:36px auto 0; color:var(--ink-faint);
+  font-size:1.02rem; font-style:italic; line-height:1.5}
+.flow::after{content:"\2193"; display:block; margin-top:10px; font-size:1.4rem; color:#cfd8e3; font-style:normal}
+details.more{max-width:1080px; margin:0 auto; border:1px solid var(--line); border-radius:var(--radius);
+  background:#fff; box-shadow:var(--shadow)}
+details.more>summary{cursor:pointer; padding:18px 24px; font-weight:700; color:var(--blue-deep); list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"\25B8"; margin-right:10px; color:var(--blue); display:inline-block; transition:transform .2s}
+details.more[open]>summary::before{transform:rotate(90deg)}
+details.more>summary span{color:var(--ink-faint); font-weight:400}
+details.more[open]>summary{border-bottom:1px solid var(--line-soft)}
+.gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:18px}
+.gcard{margin:0; border:1px solid var(--line-soft); border-radius:10px; overflow:hidden; cursor:zoom-in;
+  background:#fff; transition:border-color .15s, transform .15s}
+.gcard:hover{border-color:var(--blue); transform:translateY(-2px)}
+.gcard img{display:block; width:100%; aspect-ratio:16/10; object-fit:contain; background:#fff; padding:8px}
+.gcard figcaption{padding:8px 12px; font-size:.82rem; color:var(--ink-soft); border-top:1px solid var(--line-soft); text-align:center}
+
+/* tutorial page */
+.tut-hero{padding:70px 0 30px}
+.tut-grid{display:grid; grid-template-columns:1fr 330px; gap:26px; align-items:start; max-width:1140px; margin:0 auto}
+.chapters{background:#fff; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px}
+.chapters h4{margin:0 0 8px; font-size:1rem; color:var(--blue-deep)}
+.chapters ul{list-style:none; margin:0; padding:0}
+.chapters button{width:100%; text-align:left; background:none; border:none; border-radius:8px; padding:9px 10px;
+  font-family:inherit; font-size:.94rem; color:var(--ink-soft); cursor:pointer; display:flex; gap:10px; align-items:baseline}
+.chapters button span{font-family:"JetBrains Mono",monospace; color:var(--blue); font-size:.84rem; min-width:40px}
+.chapters button:hover,.chapters button.on{background:var(--blue-wash); color:var(--ink)}
+.chap-note{font-size:.82rem; color:var(--ink-faint); margin:12px 4px 0; line-height:1.5}
+.takeaways{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:10px}
+.tk{background:#fff; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 22px}
+.tk-n{font-family:"Newsreader",serif; font-size:1.7rem; font-weight:600; color:var(--blue); opacity:.55; line-height:1; margin-bottom:8px}
+.tk p{margin:0; font-size:.97rem; color:var(--ink-soft)}
+
+@media (max-width:820px){
+  .split,.cards3,.gallery,.tut-grid,.takeaways{grid-template-columns:1fr}
+  .act-n{font-size:2rem; min-width:40px}
+  .thesis{font-size:1.2rem}
+}
