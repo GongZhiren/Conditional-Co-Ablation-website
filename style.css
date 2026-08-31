@@ -48,7 +48,10 @@ em{font-style:italic; color:var(--blue-deep); font-weight:500}
 .subtitle em{color:var(--blue-deep)}
 .authors{display:flex; flex-wrap:wrap; gap:6px 22px; justify-content:center; font-weight:600; font-size:1.02rem}
 .authors span::after{content:""}
-.affil{color:var(--ink-faint); margin-top:6px; font-size:.98rem}
+.authors sup{font-weight:500; font-size:.68em; color:var(--blue); margin-left:1px}
+.affil{color:var(--ink-faint); margin-top:8px; font-size:.88rem; display:flex; flex-wrap:wrap;
+  gap:2px 18px; justify-content:center; max-width:900px; margin-left:auto; margin-right:auto}
+.affil sup{margin-right:3px; color:var(--blue)}
 .badges{display:flex; gap:12px; justify-content:center; margin:30px 0 8px; flex-wrap:wrap}
 .badge{display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:999px;
   border:1px solid var(--line); background:#fff; color:var(--ink); font-weight:600; font-size:.95rem;
