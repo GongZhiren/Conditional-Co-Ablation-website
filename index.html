@@ -19,7 +19,18 @@
 <div id="scrollbar"></div>
 <nav id="nav">
   <div class="nav-inner">
-    <a class="brand" href="#top"><span class="brand-mark">Co</span>Ax</a>
+    <a class="brand" href="#top" aria-label="CoAx — home">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="8.1" y="8.1" width="7.8" height="7.8" rx="1.9"/>
+        <path d="M12 8.1V5.5M12 15.9v2.6M8.1 12H5.5M15.9 12h2.6"/>
+        <circle cx="12" cy="3.5" r="1.55" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="20.5" r="1.55" fill="currentColor" stroke="none"/>
+        <circle cx="3.5" cy="12" r="1.55" fill="currentColor" stroke="none"/>
+        <circle cx="20.5" cy="12" r="1.55" fill="currentColor" stroke="none"/>
+      </svg>
+      <span><span class="brand-mark">Co</span>Ax</span>
+    </a>
     <div class="nav-links">
       <a href="#problem">Problem</a>
       <a href="#idea">Idea</a>
@@ -131,7 +142,9 @@
       <b>growth</b> of its ablation effect under that conditioning, measured in the output distribution's own
       (Fisher) geometry:</p>
     <div class="eq reveal">$$\operatorname{comp}_u(S)\;=\;\underbrace{\mathcal{E}\!\left(\delta z_{u\mid S}\right)}_{\text{effect once }S\text{ is removed}}\;-\;\underbrace{\mathcal{E}\!\left(\delta z_{u}\right)}_{\text{effect alone (intact state)}}$$</div>
-    <div class="cards3 reveal">
+  </div>
+  <div class="wrap reveal">
+    <div class="cards3">
       <div class="card"><h4>Blind-spot-proof</h4><p>A dormant backup and an irrelevant head look identical on
         the intact model. CoAx separates them: the backup's effect <b>grows</b> once its primary is gone; the
         irrelevant head's does not.</p></div>
@@ -142,7 +155,7 @@
         method; CoAx <b>completes</b> that circuit by returning the branch it hides.</p></div>
     </div>
   </div>
-  <div class="wrap narrow reveal">
+  <div class="wrap reveal">
     <h3 class="subact">Why conditioning is the right instrument &mdash; two results</h3>
     <div class="cards3" style="grid-template-columns:1fr 1fr">
       <div class="card"><h4>Proposition 1 &middot; the blind spot is real</h4><p>A perfectly dormant backup can
@@ -158,7 +171,7 @@
     </div>
   </div>
   <div class="wrap reveal">
-    <figure class="figure zoom" style="max-width:640px;margin:0 auto"><img src="assets/fig_synergy_matrix.png" alt="Pairwise interaction over the IOI heads"/>
+    <figure class="figure zoom" style="max-width:640px;margin:30px auto 0"><img src="assets/fig_synergy_matrix.png" alt="Pairwise interaction over the IOI heads"/>
       <figcaption>The pairwise interaction structure over the IOI heads: the name-movers and their backups form
         a bright off-diagonal block &mdash; the interaction a per-head score cannot see, and the aggregate that
         conditioning returns without enumerating it.</figcaption></figure>
@@ -205,8 +218,9 @@
           by the CoAx score: the documented backups move from the middle of the ranking to the top.</figcaption></figure>
     </div>
   </div>
-  <div class="wrap narrow reveal">
-    <h3 class="subact">Recovery tracks <em>which</em> circuit was removed &mdash; not how hard the model was hit</h3>
+  <div class="wrap reveal">
+   <div class="callout">
+    <h3 class="subact">Recovery tracks <em>which</em> circuit was removed</h3>
     <p class="lead">We search 5,000 random three-head sets and keep the 16 that best match the true primary
       set in behavioral damage, in primary-set Fisher displacement, and in depth. On held-out prompts those
       matched wrong sets recover the backups at only <b>0.40&thinsp;&plusmn;&thinsp;0.13</b> AUC, while the
@@ -216,6 +230,7 @@
     <p class="lead">A second control rules out normalization: replaying the ablated forward pass with clean
       LayerNorm denominators <em>raises</em> backup AUC from 0.941 to <b>0.983</b>. LayerNorm rescaling does
       not create the signal; removing it suppresses background growth and sharpens the separation.</p>
+   </div>
   </div>
   <p class="flow reveal">A high rank is necessary, not sufficient. Are the surfaced heads
     <em>mechanistically</em> backups?</p>
@@ -262,7 +277,7 @@
     </div>
   </div>
   <div class="wrap reveal">
-    <figure class="figure zoom" style="max-width:620px;margin:0 auto"><img src="assets/fig_attn.png" alt="Structural read of the name-mover branch"/>
+    <figure class="figure zoom" style="max-width:620px;margin:26px auto 0"><img src="assets/fig_attn.png" alt="Structural read of the name-mover branch"/>
       <figcaption><b>An independent, ablation-free structural read.</b> Final-position attention to token
         roles over 96 IOI prompts: documented primary and backup name-movers attend preferentially to the IO
         name, controls do not. This read alone gives 0.96 backup AUC and correlates only weakly with the CoAx
@@ -286,7 +301,7 @@
       full model's response to primary-set removal and the circuit's own, lower is better.</p>
   </div>
   <div class="wrap reveal">
-    <div class="split">
+    <div class="split top">
       <div class="split-text">
         <h4>Circuit completion</h4>
         <table class="rtable">
@@ -353,13 +368,15 @@
         6 of 8</p></div>
     </div>
   </div>
-  <div class="wrap narrow reveal">
+  <div class="wrap reveal">
+   <div class="callout">
     <h3 class="subact">What a nearby control shows</h3>
     <p class="lead">Input-side co-activation gives a complementary intact-state view and nearly matches CoAx on
       backup-label AUC (0.93 versus 0.941). But freezing its selected set causes a much larger raw IOI-margin
       loss (1.97 versus 0.90) while matching the documented backup knockout substantially worse &mdash; it
       disrupts the wider computation rather than isolating the repair branch. High label overlap is not the
       same as isolating the mechanism.</p>
+   </div>
   </div>
 </section>
 
@@ -387,6 +404,8 @@
   <div class="wrap narrow reveal">
     <span class="kicker">Resources</span>
     <h2>Paper, code, video, and citation</h2>
+  </div>
+  <div class="wrap reveal">
     <div class="res-links">
       <a class="res" href="https://arxiv.org/abs/2607.01940"><b>Paper</b><span>arXiv preprint</span></a>
       <a class="res" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><b>Code</b><span>reference implementation + one-command reproduction</span></a>
@@ -403,7 +422,8 @@
   eprint        = {2607.01940},
   archivePrefix = {arXiv},
   primaryClass  = {cs.LG},
-  note          = {Project page: https://gongzhiren.github.io/Conditional-Co-Ablation-website}
+  note          = {Project page:
+                   https://gongzhiren.github.io/Conditional-Co-Ablation-website}
 }</pre>
     </div>
   </div>
