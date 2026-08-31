@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Conditional Co-Ablation (CoAx) — Recovering Self-Repair Backups in Transformer Circuits</title>
-<meta name="description" content="A label-free score that recovers the dormant backup components a transformer circuit falls back on under intervention — the redundancy a first-order score is blind to."/>
+<title>Conditional Co-Ablation (CoAx) — Conditional Circuit Completion for Self-Repairing Transformers</title>
+<meta name="description" content="Self-repair makes a circuit incomplete under the very ablation used to test it. CoAx ranks components by how much their ablation effect grows once a primary set is removed — recovering the dormant backup branch and completing the circuit."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -25,8 +25,8 @@
       <a href="#idea">Idea</a>
       <a href="#discovery">Discovery</a>
       <a href="#mechanism">Mechanism</a>
-      <a href="#impact">Applications</a>
-      <a href="#scale">Scale</a>
+      <a href="#completion">Completion</a>
+      <a href="#scale">Generalization</a>
       <a href="tutorial.html">Tutorial</a>
     </div>
   </div>
@@ -35,10 +35,11 @@
 <!-- ================= HERO ================= -->
 <header id="top" class="hero">
   <div class="wrap">
-    <div class="tag">Mechanistic interpretability · self-repair · circuit discovery</div>
+    <div class="tag">Mechanistic interpretability · self-repair · circuit completion</div>
     <h1>Conditional Co-Ablation</h1>
-    <p class="subtitle">Recovering the self-repair <em>backups</em> a transformer circuit falls back on
-      &mdash; the redundancy a first-order score is <em>built to miss</em>.</p>
+    <p class="subtitle">A circuit that explains the intact model can be <em>incomplete under the very
+      ablation used to test it</em>. CoAx asks what grows once the primary set is gone &mdash; and completes
+      the circuit.</p>
     <div class="authors">
       <span>Zhiren Gong</span><span>Zihao Zeng</span><span>Chau Yuen</span><span>Wei Yang Bryan Lim</span>
     </div>
@@ -51,85 +52,112 @@
     </div>
     <div class="headline-stat">
       <div class="stat">
-        <div class="stat-row"><span class="lab">single ablation</span><span class="v bad" data-count="0.33">0.33</span></div>
-        <div class="arrow">backup recovery ROC-AUC&nbsp;&rarr;</div>
-        <div class="stat-row"><span class="lab">CoAx (ours)</span><span class="v good" data-count="0.91">0.91</span></div>
+        <div class="stat-row"><span class="lab">strongest intact-state baseline</span><span class="v bad" data-count="0.815">0.815</span></div>
+        <div class="arrow">backup-recovery ROC-AUC&nbsp;&rarr;</div>
+        <div class="stat-row"><span class="lab">CoAx (ours)</span><span class="v good" data-count="0.941">0.941</span></div>
       </div>
     </div>
   </div>
   <div class="wrap wide hero-fig reveal">
     <figure class="figure zoom">
-      <img src="assets/fig_teaser.png" alt="CoAx teaser"/>
-      <figcaption><b>One score, five payoffs (GPT-2-small).</b> (a) the backups hide in the first-order blind
-        spot · (b) CoAx ranks them at the top · (c) they compensate for the primaries · (d) knockout matches
-        the oracle while a first-order top-up overshoots · (e) repair-aware pruning wins from 124M to 7B.</figcaption>
+      <img src="assets/fig_teaser.png" alt="From self-repair to conditional circuit completion"/>
+      <figcaption><b>From self-repair to conditional circuit completion</b> (GPT-2-small, IOI).
+        <b>(a)</b> Ablating the primary circuit recruits a dormant backup branch while behavior is largely
+        preserved. <b>(b)</b> CoAx compares each candidate's ablation effect with the primary set present and
+        removed; that contrast distinguishes dormant backups and exposes the all-order effect-change
+        aggregate linking each candidate to the removed set. <b>(c)</b> Conditioning exposes the documented
+        backups, improves recovery over intact-state baselines, and substantially completes the missing
+        branch.</figcaption>
     </figure>
   </div>
 </header>
 
 <main>
-<p class="thesis reveal">A component's importance is not a property it carries alone. In a redundant
-  circuit it becomes visible only <em>relative to what has been removed</em> — and that single shift is
+<p class="thesis reveal">A component's importance is not a property it carries alone. In a self-repairing
+  circuit it becomes visible only <em>relative to what has been removed</em> &mdash; and that single shift is
   what CoAx measures, turning a blind spot into a signal.</p>
 
 <!-- ============ ACT 01 — PROBLEM ============ -->
 <section id="problem" class="sec">
   <div class="wrap narrow">
     <div class="act-head reveal"><span class="act-n">01</span><div><span class="kicker">The problem</span>
-      <h2>Self-repair hides the components that matter</h2></div></div>
-    <p class="lead reveal">A behavior is localized to a <b>circuit</b>, and each component is scored by the
-      effect of ablating it in isolation. That first-order weight is only meaningful if importance is
-      <em>additive</em>. It stops being additive the moment a circuit is <b>redundant</b>.</p>
+      <h2>The ablation we use to test a circuit changes the circuit</h2></div></div>
+    <p class="lead reveal">A behavior is localized to a <b>circuit</b>, and the standard test is to ablate a
+      component and measure the resulting output change. <b>Self-repair</b> breaks that test: ablating a
+      <em>primary</em> component can activate a dormant <em>backup</em>, changing which circuit carries the
+      behavior in the first place.</p>
+  </div>
+  <div class="wrap narrow reveal">
+    <h4>Two wrong conclusions from one measurement</h4>
+    <p class="lead">Remove a primary head and a dormant <b>backup</b> takes over. The output barely moves, so
+      the primary reads as unimportant &mdash; the model quietly repaired the damage. And the backup was
+      silent on the intact model, so it reads as unimportant too.</p>
+    <p class="lead">So a circuit can faithfully explain the <em>original</em> model and still be
+      <b>incomplete under the very ablation used to test it</b>. That raises a conditional question: which
+      components become causally important only after a known part of the circuit is removed?</p>
   </div>
   <div class="wrap reveal">
-    <div class="split">
-      <div class="split-text">
-        <h4>Two wrong conclusions from one measurement</h4>
-        <p>Remove a primary head and a dormant <b>backup</b> takes over. The output barely moves, so the
-          primary reads as unimportant — the model quietly repaired the damage. And the backup was silent on
-          the intact model, so it reads as unimportant too.</p>
-        <p>A single-ablation score therefore misreads <em>both</em> sides of the redundancy — and every tool
-          built on it (attribution, knockout, pruning) inherits the error.</p>
-      </div>
-      <figure class="figure zoom split-fig"><img src="assets/fig_concept.png" alt="Self-repair schematic"/>
-        <figcaption>Ablating the primary path wakes a dormant backup that re-routes the answer.</figcaption></figure>
+    <div class="takeaways two">
+      <div class="tk"><div class="tk-n">0.28</div><p><b>of a 2.57 margin</b><br>is all that moves when the
+        three primary name-movers are ablated &mdash; eight documented backups compensate</p></div>
+      <div class="tk"><div class="tk-n">1.9&times;</div><p><b>non-additive</b><br>ablating the primaries
+        <em>together with</em> those backups costs 1.9&times; the sum of their individual effects</p></div>
     </div>
   </div>
-  <p class="flow reveal">First-order scoring can't tell a dormant backup from a dead head — both are silent.
-    So we change the question.</p>
+  <div class="wrap wide reveal">
+    <figure class="figure zoom"><img src="assets/fig_routes.png" alt="The IOI circuit in token x layer context"/>
+      <figcaption><b>The documented IOI circuit, in token&times;layer context.</b> Given &ldquo;Mary and John
+        went to the store; John gave a drink to&nbsp;__&rdquo;, the primary name-movers write &ldquo;Mary&rdquo;
+        to the output (orange); the backup branch (blue dashed) is the part the intact model hides.</figcaption></figure>
+  </div>
+  <p class="flow reveal">Scoring on the intact model cannot tell a dormant backup from an irrelevant head
+    &mdash; both are silent. So we change the question.</p>
 </section>
 
 <!-- ============ ACT 02 — IDEA ============ -->
 <section id="idea" class="sec alt">
   <div class="wrap narrow">
     <div class="act-head reveal"><span class="act-n">02</span><div><span class="kicker">The idea</span>
-      <h2>Ask what grows once the primary is gone</h2></div></div>
-    <p class="lead reveal">Instead of a unit's effect in isolation, CoAx measures its effect <em>after</em> a
-      primary seed <span class="mono">S</span> has been ablated, in the output distribution's own (Fisher)
-      metric. The score is the <b>growth</b> of that ablation energy under conditioning:</p>
-    <div class="eq reveal">$$\operatorname{comp}_u(S)\;=\;\underbrace{\mathcal{E}\!\big(\delta z_u \mid S\big)}_{\text{effect once }S\text{ is gone}}\;-\;\underbrace{\mathcal{E}\!\big(\delta z_u \mid \varnothing\big)}_{\text{effect alone (first order)}}$$</div>
+      <h2>Ask what grows once the primary set is gone</h2></div></div>
+    <p class="lead reveal">We formalize the gap as <b>conditional circuit completion</b>: given a primary set
+      <span class="mono">S</span> supplied by the analyst, identify the components whose causal importance
+      emerges only after <span class="mono">S</span> is removed. CoAx scores each candidate by the
+      <b>growth</b> of its ablation effect under that conditioning, measured in the output distribution's own
+      (Fisher) geometry:</p>
+    <div class="eq reveal">$$\operatorname{comp}_u(S)\;=\;\underbrace{\mathcal{E}\!\left(\delta z_{u\mid S}\right)}_{\text{effect once }S\text{ is removed}}\;-\;\underbrace{\mathcal{E}\!\left(\delta z_{u}\right)}_{\text{effect alone (intact state)}}$$</div>
     <div class="cards3 reveal">
-      <div class="card"><h4>Blind-spot-proof</h4><p>A dormant backup and a dead head look identical on the
-        clean model. CoAx separates them: the backup's effect <b>grows</b> once its primary is gone; the dead
-        head's does not.</p></div>
-      <div class="card"><h4>Cheap &amp; label-free</h4><p>No gradients, no task labels — one clean pass, one
-        seed-ablated pass, one pass per candidate: <span class="mono">O(#heads)</span> forwards.</p></div>
-      <div class="card"><h4>A completion, not a rewrite</h4><p>The seed can come from any first-order method;
-        CoAx <b>completes</b> that circuit by returning the backups it hides.</p></div>
+      <div class="card"><h4>Blind-spot-proof</h4><p>A dormant backup and an irrelevant head look identical on
+        the intact model. CoAx separates them: the backup's effect <b>grows</b> once its primary is gone; the
+        irrelevant head's does not.</p></div>
+      <div class="card"><h4>Cheap &amp; label-free</h4><p>Two shared reference passes plus two per candidate:
+        <span class="mono">O(|U|)</span> forward evaluations. No backward pass, no task gradient, no
+        labels.</p></div>
+      <div class="card"><h4>A completion, not a rewrite</h4><p>The primary set can come from any intact-state
+        method; CoAx <b>completes</b> that circuit by returning the branch it hides.</p></div>
     </div>
   </div>
-  <div class="wrap wide reveal">
-    <figure class="figure zoom"><img src="assets/fig_structure.png" alt="Synergy module and circuit re-wiring"/>
-      <figcaption><b>What conditioning exploits.</b> The pairwise interaction between heads is a whole matrix
-        (b): the name-movers and their backups form a bright off-diagonal block — the <b>self-repair
-        module</b> a per-head score (a) cannot see. Intact (c) the primaries write the answer while the
-        backups stay dormant; ablate the primaries (d) and the backups wake and re-route to the logit.</figcaption></figure>
+  <div class="wrap narrow reveal">
+    <h3 class="subact">Why conditioning is the right instrument &mdash; two results</h3>
+    <div class="cards3" style="grid-template-columns:1fr 1fr">
+      <div class="card"><h4>Proposition 1 &middot; the blind spot is real</h4><p>A perfectly dormant backup can
+        be <b>indistinguishable</b> from an irrelevant component for <em>every</em> intact-state score
+        &mdash; anything computed from a candidate's activations, output derivatives, or single-ablation
+        effect on the original model. It is non-identifiability for the whole class, not weakness in one
+        score.</p></div>
+      <div class="card"><h4>Proposition 2 &middot; what conditioning buys</h4><p>The change in a candidate's
+        ablation effect once <span class="mono">S</span> is removed is <b>exactly</b> the aggregate of every
+        interaction order linking it to <span class="mono">S</span>. Enumerating those terms is combinatorial
+        in <span class="mono">|S|</span>; conditioning returns the whole aggregate in
+        <span class="mono">O(|U|)</span> forward evaluations.</p></div>
+    </div>
   </div>
-  <div class="wrap reveal"><div class="figrow">
-    <figure class="gcard"><img src="assets/fig_synergy_matrix.png" alt="Synergy matrix"><figcaption>The pairwise synergy over the IOI heads — the boxed name-mover / backup block.</figcaption></figure>
-    <figure class="gcard"><img src="assets/fig_headmap.png" alt="Head map"><figcaption>The 12&times;12 head grid: first-order saliency vs. the CoAx score — the same inversion, in space.</figcaption></figure>
-  </div></div>
-  <p class="flow reveal">The structure is there in the second-order signal. Does conditioning actually surface
+  <div class="wrap reveal">
+    <figure class="figure zoom" style="max-width:640px;margin:0 auto"><img src="assets/fig_synergy_matrix.png" alt="Pairwise interaction over the IOI heads"/>
+      <figcaption>The pairwise interaction structure over the IOI heads: the name-movers and their backups form
+        a bright off-diagonal block &mdash; the interaction a per-head score cannot see, and the aggregate that
+        conditioning returns without enumerating it.</figcaption></figure>
+  </div>
+  <p class="flow reveal">The structure is there in the interaction signal. Does conditioning actually surface
     the documented backups?</p>
 </section>
 
@@ -138,9 +166,9 @@
   <div class="wrap narrow">
     <div class="act-head reveal"><span class="act-n">03</span><div><span class="kicker">Discovery</span>
       <h2>From the blind spot to the top of the ranking</h2></div></div>
-    <p class="lead reveal">On the GPT-2-small IOI circuit — the one with head-level backup ground truth —
-      conditioning on the three name-mover primaries and ranking the other 141 heads by conditional growth
-      recovers the eight documented backups that single-ablation saliency ranks below chance.</p>
+    <p class="lead reveal">On the GPT-2-small IOI circuit &mdash; the one with head-level backup ground truth
+      &mdash; we supply the three primary name-movers, rank the other 141 heads by conditional growth, and
+      score against the eight documented backups. Labels are used only for evaluation.</p>
   </div>
   <div class="wrap reveal">
     <div class="split">
@@ -148,170 +176,204 @@
         <table class="rtable">
           <thead><tr><th>score</th><th>backup ROC-AUC</th></tr></thead>
           <tbody>
-            <tr><td>single ablation <span class="ord">1st</span></td><td>0.33</td></tr>
-            <tr><td>attribution patching (AtP) <span class="ord">1st</span></td><td>0.60</td></tr>
-            <tr><td>EAP-IG <span class="ord">1st</span></td><td>0.70</td></tr>
-            <tr><td>AtP* GradDrop <span class="ord">1st</span></td><td>0.82</td></tr>
-            <tr class="win"><td>CoAx <span class="ord ours">2nd</span></td><td><b>0.91</b></td></tr>
+            <tr><td>AtP <span class="ord">intact</span></td><td>0.600</td></tr>
+            <tr><td>single ablation <span class="ord">intact</span></td><td>0.603</td></tr>
+            <tr><td>conditional gradient <span class="ord">removed</span></td><td>0.626</td></tr>
+            <tr><td>EAP-IG <span class="ord">intact</span></td><td>0.700</td></tr>
+            <tr><td>conditional energy <span class="ord">removed</span></td><td>0.758</td></tr>
+            <tr><td>AtP* GradDrop <span class="ord">intact</span></td><td>0.815</td></tr>
+            <tr class="win"><td>CoAx <span class="ord ours">intact&rarr;removed</span></td><td><b>0.941</b></td></tr>
           </tbody>
         </table>
-        <p>Every additive score falls short — <em>including</em> those built for self-repair. The gap is not
-          a smarter gradient; it is the node-additive <b>form</b>, which a non-additive substitution cannot
-          be expressed in. The plot at right is the same result, head by head.</p>
+        <p><b>The gain is the two-state contrast</b> &mdash; not a stronger scorer, and not reading the
+          intervened model alone. CoAx improves by <b>0.126</b> over the strongest intact-state attribution
+          baseline and by <b>0.183</b> over the matched conditional-energy control. Under the 8/141 class
+          imbalance the separation is starker in average precision: <b>0.557</b> versus <b>0.174</b> for
+          AtP*.</p>
+        <p>Holding the contrast fixed and replacing the Fisher geometry with plain
+          <span class="mono">&#8467;<sub>2</sub></span> still gives 0.905, so conditioning carries the main
+          signal and the geometry sharpens it.</p>
       </div>
-      <div class="plot-card split-fig">
-        <div id="scatter"></div>
-        <div class="legend">
-          <span><i class="dot other"></i>ordinary head</span>
-          <span><i class="dot primary"></i>name-mover (seed)</span>
-          <span><i class="star">★</i>documented backup</span>
-          <span class="legend-note">live plot · released code · 48 IOI prompts · hover a point</span>
-        </div>
-      </div>
+      <figure class="figure zoom split-fig"><img src="assets/fig_separation.png" alt="Intact-state versus conditional scoring"/>
+        <figcaption><b>The same eight backups, two scores.</b> Every head placed by intact-state scoring and
+          by the CoAx score: the documented backups move from the middle of the ranking to the top.</figcaption></figure>
     </div>
   </div>
-  <div class="wrap wide reveal"><figure class="figure zoom"><img src="assets/fig_separation.png" alt="Blind-spot separation"/>
-    <figcaption><b>The same eight backups, two scores.</b> Every head placed by first-order saliency (left)
-      and by the CoAx score (right): the documented backups sit near the bottom on the left (AUC 0.33) and
-      jump to the top on the right (AUC 0.91).</figcaption></figure></div>
-  <p class="flow reveal">A high rank is necessary, not sufficient. Are the surfaced heads <em>mechanistically</em>
-    backups?</p>
+  <div class="wrap narrow reveal">
+    <h3 class="subact">Recovery tracks <em>which</em> circuit was removed &mdash; not how hard the model was hit</h3>
+    <p class="lead">We search 5,000 random three-head sets and keep the 16 that best match the true primary
+      set in behavioral damage, in primary-set Fisher displacement, and in depth. On held-out prompts those
+      matched wrong sets recover the backups at only <b>0.40&thinsp;&plusmn;&thinsp;0.13</b> AUC, while the
+      true primary set stays at about <b>0.94</b>. The interventions are matched both in task-level damage and
+      in output-space displacement measured in the same geometry as the score &mdash; and they still fail to
+      expose the branch.</p>
+    <p class="lead">A second control rules out normalization: replaying the ablated forward pass with clean
+      LayerNorm denominators <em>raises</em> backup AUC from 0.941 to <b>0.983</b>. LayerNorm rescaling does
+      not create the signal; removing it suppresses background growth and sharpens the separation.</p>
+  </div>
+  <p class="flow reveal">A high rank is necessary, not sufficient. Are the surfaced heads
+    <em>mechanistically</em> backups?</p>
 </section>
 
 <!-- ============ ACT 04 — MECHANISM ============ -->
 <section id="mechanism" class="sec alt">
   <div class="wrap narrow">
     <div class="act-head reveal"><span class="act-n">04</span><div><span class="kicker">Mechanism</span>
-      <h2>They wake up — and the wake-up is causal</h2></div></div>
-    <p class="lead reveal">The recovered heads behave like backups on three independent, label-free signals,
-      and a counterfactual patch closes the causal loop.</p>
+      <h2>They wake up &mdash; and the wake-up is causal</h2></div></div>
+    <p class="lead reveal">Two stronger questions than ranking: does the backup response grow as more of the
+      primary circuit is removed, and does preventing that response remove the repair?</p>
   </div>
   <div class="wrap wide reveal">
-    <figure class="figure zoom"><img src="assets/fig_mechanism.png" alt="Wake-up curves and patching"/>
-      <figcaption><b>Progressively ablating the primaries.</b> The backups grow in output norm (a) and in
-        causal effect on the answer (b) while matched random heads stay flat; the answer's direct logit
-        attribution hands off to them (c); and freezing their dormant activations removes <b>55%</b> of the
-        self-repair (d) — freezing random heads removes none.</figcaption></figure>
+    <div class="figrow three">
+      <figure class="gcard"><img src="assets/fig_mech_a.png" alt="Direct-logit hand-off"><figcaption><b>(a)</b> Removing the primary name-movers shifts direct-logit attribution toward the documented backup branch while the IO&minus;S margin is largely preserved.</figcaption></figure>
+      <figure class="gcard"><img src="assets/fig_mech_b.png" alt="Graded wake-up"><figcaption><b>(b)</b> Documented backups and CoAx-selected heads both rise on the wake-up read-outs as more primaries are removed; matched random heads stay flat.</figcaption></figure>
+      <figure class="gcard"><img src="assets/fig_mech_c.png" alt="Causal load-bearingness"><figcaption><b>(c)</b> Freezing each selector's top-8 at its intact-state outputs measures causal load-bearingness.</figcaption></figure>
+    </div>
+  </div>
+  <div class="wrap reveal">
+    <div class="takeaways two">
+      <div class="tk"><div class="tk-n">+0.57&rarr;+1.68</div><p><b>The hand-off is graded</b><br>the backup
+        branch roughly triples its direct contribution to the answer, while the margin falls only
+        2.57&nbsp;&rarr;&nbsp;2.29</p></div>
+      <div class="tk"><div class="tk-n">0.90</div><p><b>CoAx&rsquo;s set is load-bearing</b><br>IOI-margin
+        loss from freezing its top-8 &mdash; against 0.57 for the documented backups, 0.27 for a size-matched
+        random set and 0.03 for conditional energy</p></div>
+    </div>
   </div>
   <div class="wrap reveal">
     <div class="split">
-      <figure class="figure zoom split-fig"><img src="assets/fig_casestudy.png" alt="One backup head"/>
+      <figure class="figure zoom split-fig"><img src="assets/fig_casestudy.png" alt="One dormant backup, end to end"/>
         <figcaption>Head [10,6], traced end to end.</figcaption></figure>
       <div class="split-text">
-        <h4>One head, four views</h4>
-        <p>A single documented backup, [10,6], is <b>silent</b> on the clean model, yet at the prediction
-          position it already <b>reads the indirect-object name</b> — the defining name-mover behavior.</p>
-        <p>Once the primaries are ablated it becomes <b>load-bearing</b>, and CoAx ranks it among the top
-          backups. Invisible first-order, structurally a name-mover, causal only under conditioning.</p>
+        <h4>One head, two views</h4>
+        <p>A single documented backup, <b>[10,6]</b>, is silent on the intact model, yet from the answer
+          position it already <b>attends to the indirect-object name</b> &mdash; the structural signature of a
+          name-mover.</p>
+        <p>Its direct IO&minus;S contribution grows from <b>+0.07</b> intact to <b>+0.21</b> once the primary
+          name-movers are removed, while a random comparison head stays near zero. Invisible in the intact
+          state, structurally a name-mover, causal only under conditioning.</p>
       </div>
     </div>
   </div>
   <div class="wrap reveal">
-    <p class="lead center" style="margin-bottom:8px"><b>The recovered circuit, three views</b> — the primary
-      write-path (orange) and the dormant backup route (blue) CoAx adds in parallel.</p>
-    <div class="figrow three">
-      <figure class="gcard"><img src="assets/fig_circuit.png" alt="Functional circuit"><figcaption>Functional circuit</figcaption></figure>
-      <figure class="gcard"><img src="assets/fig_wiring.png" alt="Head re-wiring"><figcaption>Head-level re-wiring</figcaption></figure>
-      <figure class="gcard"><img src="assets/fig_routes.png" alt="Information routes"><figcaption>Token&times;layer routes</figcaption></figure>
-    </div>
+    <figure class="figure zoom" style="max-width:620px;margin:0 auto"><img src="assets/fig_attn.png" alt="Structural read of the name-mover branch"/>
+      <figcaption><b>An independent, ablation-free structural read.</b> Final-position attention to token
+        roles over 96 IOI prompts: documented primary and backup name-movers attend preferentially to the IO
+        name, controls do not. This read alone gives 0.96 backup AUC and correlates only weakly with the CoAx
+        score (&rho;&nbsp;=&nbsp;0.09) &mdash; independent evidence for the same role.</figcaption></figure>
   </div>
-  <p class="flow reveal">If they are load-bearing, they should change the tools that depend on them.</p>
+  <p class="flow reveal">If the branch is load-bearing, adding it back should repair the causal account that
+    was incomplete.</p>
 </section>
 
-<!-- ============ ACT 05 — APPLICATIONS ============ -->
-<section id="impact" class="sec">
+<!-- ============ ACT 05 — COMPLETION ============ -->
+<section id="completion" class="sec">
   <div class="wrap narrow">
-    <div class="act-head reveal"><span class="act-n">05</span><div><span class="kicker">Closing the loop · downstream applications</span>
-      <h2>The blind spot corrupts the tools built on it — CoAx repairs them</h2></div></div>
-    <p class="lead reveal">Attribution, capability knockout, and structured pruning all rank components by the
-      <em>same</em> node-additive score, so each inherits the same error wherever a circuit is redundant. Fed
-      the recovered backups — one label-free pass — all three are repaired.</p>
+    <div class="act-head reveal"><span class="act-n">05</span><div><span class="kicker">Closing the loop</span>
+      <h2>Completing the circuit</h2></div></div>
+    <p class="lead reveal">Recovery is not the goal in itself: the recovered components should repair the
+      causal account that was incomplete under intervention. We take the <em>same raw headline ranking</em>
+      used in discovery &mdash; no backup labels, no task gradient, no task-direction filter &mdash; and use
+      its top eight heads as the completion.</p>
+    <p class="lead reveal">Following Wang et al., completeness asks whether a circuit reproduces the full
+      model's response to the same ablation. Writing <span class="mono">D(C)</span> for the gap between the
+      full model's response to primary-set removal and the circuit's own, lower is better.</p>
   </div>
-
   <div class="wrap reveal">
-    <div class="takeaways">
-      <div class="tk"><div class="tk-n">1.76</div><p><b>Attribution recovered</b><br>the effect self-repair masked (vs 0.22 from the primaries alone)</p></div>
-      <div class="tk"><div class="tk-n">0.70</div><p><b>Knockout accuracy</b><br>matches the 0.72 documented-backup oracle; a first-order top-up overshoots</p></div>
-      <div class="tk"><div class="tk-n">80.6</div><p><b>Pruned perplexity @50%</b><br>vs gradient-Taylor 201, from 124M to 7B</p></div>
+    <div class="split">
+      <div class="split-text">
+        <h4>Circuit completion</h4>
+        <table class="rtable">
+          <thead><tr><th>circuit</th><th>incompleteness <span class="mono">D(C)</span> &darr;</th></tr></thead>
+          <tbody>
+            <tr><td>primary circuit (backup branch removed)</td><td>0.755&nbsp;&plusmn;&nbsp;0.074</td></tr>
+            <tr><td>documented circuit</td><td>0.276&nbsp;&plusmn;&nbsp;0.027</td></tr>
+            <tr class="win"><td>+ CoAx top-8</td><td><b>0.205&nbsp;&plusmn;&nbsp;0.030</b></td></tr>
+            <tr><td>+ random top-8</td><td>0.808&nbsp;&plusmn;&nbsp;0.206</td></tr>
+          </tbody>
+        </table>
+        <p>Adding the label-free CoAx set reduces incompleteness from <b>0.75 to 0.21</b>. It does more than
+          localize backup components: it restores the missing counterfactual response, turning backup
+          localization into circuit completion.</p>
+      </div>
+      <div class="split-text">
+        <h4>Backup-role knockout</h4>
+        <table class="rtable">
+          <thead><tr><th>top-up</th><th>margin dist. &darr;</th><th>output KL &darr;</th><th>unrel. KL &darr;</th></tr></thead>
+          <tbody>
+            <tr><td>documented backups</td><td>0.00</td><td>0.00</td><td>0.09</td></tr>
+            <tr class="win"><td>+ CoAx</td><td><b>0.99</b></td><td><b>0.17</b></td><td><b>0.14</b></td></tr>
+            <tr><td>+ co-activation</td><td>1.79</td><td>0.47</td><td>0.15</td></tr>
+            <tr><td>+ CoAx next-8</td><td>2.24</td><td>0.64</td><td>0.54</td></tr>
+            <tr><td>+ AtP* GradDrop</td><td>2.62</td><td>0.82</td><td>0.31</td></tr>
+            <tr><td>+ random</td><td>1.27</td><td>0.43</td><td>0.15</td></tr>
+          </tbody>
+        </table>
+        <p>Reversing the intervention: removing the selected set should reproduce the <em>documented</em>
+          backup effect. A large drop alone would not identify the branch &mdash; disrupting unrelated
+          computation also hurts IOI &mdash; so we track collateral KL on unrelated text as well.</p>
+      </div>
     </div>
   </div>
-
-  <div class="wrap narrow"><h3 class="subact reveal">Capability knockout — a knockout needs the backups
-    <span>· click through the states</span></h3></div>
-  <div class="wrap reveal">
-    <div class="demo-card">
-      <div class="demo-controls">
-        <button class="dbtn active" data-state="clean">Intact model</button>
-        <button class="dbtn" data-state="prim">Ablate primaries</button>
-        <button class="dbtn" data-state="coax">+ CoAx backups</button>
-        <button class="dbtn" data-state="own">+ first-order top-up</button>
-      </div>
-      <div class="demo-body">
-        <div class="gauge">
-          <div class="gauge-label">IOI answer margin <span class="mono">(% of intact)</span></div>
-          <div class="bar-track"><div id="marginBar" class="bar-fill"></div><div class="bar-val" id="marginVal">100%</div></div>
-          <div class="gauge-label" style="margin-top:18px">Task accuracy <span class="mono">(% correct)</span></div>
-          <div class="bar-track"><div id="accBar" class="bar-fill acc"></div><div class="bar-val" id="accVal">100%</div></div>
-        </div>
-        <div class="demo-explain" id="demoExplain"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="wrap narrow"><h3 class="subact reveal">Repair-aware pruning <span>· the removal order that keeps backups</span></h3></div>
-  <div class="wrap wide reveal">
-    <figure class="figure zoom"><img src="assets/fig_applications.png" alt="Pruning across scales"/>
-      <figcaption><b>WikiText-2 perplexity vs. heads pruned, 124M&ndash;7B.</b> Re-measuring the score as heads
-        are removed gives a repair-aware order (blue) that stays nearest the dense model at every scale,
-        dominating random, magnitude, Wanda, Taylor, and the static co-ablation order.</figcaption></figure>
-  </div>
-  <p class="flow reveal">One circuit, one model — does the phenomenon hold more broadly?</p>
+  <p class="flow reveal">One circuit, one model &mdash; does the conditional signal hold more broadly?</p>
 </section>
 
-<!-- ============ ACT 06 — SCALE ============ -->
+<!-- ============ ACT 06 — GENERALIZATION ============ -->
 <section id="scale" class="sec alt">
   <div class="wrap narrow">
-    <div class="act-head reveal"><span class="act-n">06</span><div><span class="kicker">Generalization &amp; scope</span>
-      <h2>Label-free, across scale and architecture</h2></div></div>
-    <p class="lead reveal">The same label-free pipeline replicates the backup signature across the GPT-2
-      family and completes a second redundant circuit — induction — on eight further models spanning six
-      architecture families.</p>
+    <div class="act-head reveal"><span class="act-n">06</span><div><span class="kicker">Generalization</span>
+      <h2>Beyond one annotated circuit</h2></div></div>
+    <p class="lead reveal">Two tests without backup labels: does conditional growth agree with
+      <em>independently measured</em> repair across mechanisms, and do the recovered sets complete circuits in
+      other models?</p>
   </div>
   <div class="wrap wide reveal">
-    <figure class="figure zoom"><img src="assets/fig_generalization.png" alt="Generalization"/>
-      <figcaption><b>Two axes of generalization.</b> (a) the discovered IOI backups wake up under primary
-        ablation across GPT-2 small/medium/large; (b) label-free induction completion drops the log-probability
-        far more than matched-random on eight models; (c) a stronger "+own" control confirms the recovered
-        set is load-bearing.</figcaption></figure>
-  </div>
-  <div class="wrap narrow reveal">
-    <h3 class="subact">Where it applies — and where it doesn't</h3>
-    <p class="lead">CoAx wins on the output-movement circuits whose heads share aligned write directions. Its
-      scope is honest: where redundancy is instead shared among co-firing heads, even input-side co-activation
-      finds them and CoAx is complementary; and on the MLP-dominated greater-than circuit the head-level
-      signal does not transfer — a property of the circuit, not the score.</p>
+    <figure class="figure zoom"><img src="assets/fig_regime.png" alt="Generalization across mechanisms and models"/>
+      <figcaption><b>Conditional repair generalizes.</b> <b>(a)</b> Signed growth has positive rank agreement
+        with mechanism-matched held-out causal repair in 11 of 12 instances and in all four mechanism
+        clusters; the bottom row is the hierarchical mean with a nested 95% CI. <b>(b)</b> CoAx-selected
+        completions beat size-matched random completions on all eight non-GPT-2 models across six
+        architecture families; hollow circles are each model's own next induction heads, a stronger
+        role-matched control.</figcaption></figure>
   </div>
   <div class="wrap reveal">
-    <figure class="figure zoom" style="max-width:660px;margin:0 auto"><img src="assets/fig_crossmodel_heatmap.png" alt="Cross-model geometry"/>
-      <figcaption><b>Output- vs. input-side geometry across twelve models.</b> Blue = CoAx's co-ablation beats
-        input-side co-activation at recovering that circuit's redundancy; orange = co-activation wins.</figcaption></figure>
+    <div class="takeaways two">
+      <div class="tk"><div class="tk-n">11 / 12</div><p><b>Across mechanisms</b><br>positive agreement with
+        held-out causal repair over name-mover, S-inhibition, induction and duplicate-token clusters;
+        hierarchical mean +0.123, nested 95% CI [+0.047, +0.201]</p></div>
+      <div class="tk"><div class="tk-n">8 / 8</div><p><b>Across models</b><br>completion beats a size-matched
+        random set on every non-GPT-2 model &mdash; Pythia 160M/410M/1.4B, GPT-Neo 1.3B, Gemma-2 2B,
+        Qwen2.5 7B, OLMo-2 7B, Llama-3.1 8B &mdash; and beats each model's own next induction heads on
+        6 of 8</p></div>
+    </div>
   </div>
-  <div class="wrap reveal"><div class="figrow">
-    <figure class="gcard"><img src="assets/fig_crossmodel_blindspot.png" alt="Blind spot across GPT-2"><figcaption>The first-order blind spot recurs across the whole GPT-2 family.</figcaption></figure>
-    <figure class="gcard"><img src="assets/fig_crossarch.png" alt="Cross-architecture induction"><figcaption>Induction completion transfers across six architecture families.</figcaption></figure>
-  </div></div>
+  <div class="wrap narrow reveal">
+    <h3 class="subact">What a nearby control shows</h3>
+    <p class="lead">Input-side co-activation gives a complementary intact-state view and nearly matches CoAx on
+      backup-label AUC (0.93 versus 0.941). But freezing its selected set causes a much larger raw IOI-margin
+      loss (1.97 versus 0.90) while matching the documented backup knockout substantially worse &mdash; it
+      disrupts the wider computation rather than isolating the repair branch. High label overlap is not the
+      same as isolating the mechanism.</p>
+  </div>
 </section>
 
 <!-- ============ UNDER THE HOOD ============ -->
 <section id="method" class="sec">
   <div class="wrap narrow reveal"><span class="kicker">Under the hood</span>
-    <h2>What makes the score work — and what it costs</h2>
-    <p class="lead center">Two design choices carry it — conditioning and centering — and the price is
-      forward passes only: no gradients, no labels.</p></div>
-  <div class="wrap reveal"><div class="figrow">
-    <figure class="gcard"><img src="assets/fig_method_analysis.png" alt="Method analysis"><figcaption>Data-efficient (strong at 32 prompts); centering is the load-bearing ingredient; and the score is invariant to whether a backup writes the answer direction.</figcaption></figure>
-    <figure class="gcard"><img src="assets/fig_efficiency.png" alt="Quality vs. cost"><figcaption>Quality vs. compute: the conditional route reaches the second-order signal at O(#heads), far left of the explicit pairwise wall.</figcaption></figure>
-  </div></div>
+    <h2>What makes the score work &mdash; and what it costs</h2>
+    <p class="lead center">Conditioning carries the signal, the centered Fisher geometry sharpens it, and the
+      price is forward passes only: no backward pass, no task gradient, no labels, and every candidate
+      intervention is independent and batchable.</p></div>
+  <div class="wrap wide reveal">
+    <figure class="figure zoom"><img src="assets/fig_method_analysis.png" alt="Diagnostics of the CoAx score"/>
+      <figcaption><b>Diagnostics of the score.</b> <b>(a)</b> Recovery is already near the full result with a
+        small unlabeled calibration set &mdash; 16 prompts give 0.931, 32 give 0.937, and the 96-prompt main
+        setting gives 0.941. <b>(b)</b> Output-geometry ablation under the same conditional contrast: plain
+        &#8467;<sub>2</sub> reaches 0.905, centering alone 0.903 and probability weighting alone 0.909, while
+        the full centered Fisher geometry reaches 0.941 &mdash; the two ingredients only pay off together.
+        <b>(c)</b> As backups move off the task direction, full-distribution CoAx stays stable while the
+        conditional gradient deteriorates and AtP* stays near chance.</figcaption></figure>
+  </div>
 </section>
 
 <!-- ============ RESOURCES ============ -->
@@ -322,16 +384,19 @@
     <div class="res-links">
       <a class="res" href="https://arxiv.org/abs/2607.01940"><b>Paper</b><span>arXiv preprint</span></a>
       <a class="res" href="https://github.com/GongZhiren/Conditional-Co-Ablation"><b>Code</b><span>reference implementation + one-command reproduction</span></a>
-      <a class="res" href="tutorial.html"><b>Tutorial</b><span>a narrated ~4½-minute video tour</span></a>
+      <a class="res" href="tutorial.html"><b>Tutorial</b><span>a narrated video tour</span></a>
       <a class="res" href="#bibtex"><b>BibTeX</b><span>cite this work</span></a>
     </div>
     <div id="bibtex" class="bibtex">
       <div class="bib-head"><span>BibTeX</span><button id="copyBib">Copy</button></div>
-      <pre id="bibContent">@inproceedings{gong2026coax,
-  title     = {Conditional Co-Ablation: Recovering Self-Repair Backups in Transformer Circuits},
-  author    = {Gong, Zhiren and Zeng, Zihao and Yuen, Chau and Lim, Wei Yang Bryan},
-  year      = {2026},
-  note      = {Project page: https://gongzhiren.github.io/Conditional-Co-Ablation-website}
+      <pre id="bibContent">@misc{gong2026coax,
+  title         = {Conditional Co-Ablation: Recovering Self-Repair Backups in Transformer Circuits},
+  author        = {Gong, Zhiren and Zeng, Zihao and Yuen, Chau and Lim, Wei Yang Bryan},
+  year          = {2026},
+  eprint        = {2607.01940},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {Project page: https://gongzhiren.github.io/Conditional-Co-Ablation-website}
 }</pre>
     </div>
   </div>
@@ -340,14 +405,13 @@
 </main>
 
 <footer>
-  <div class="wrap narrow"><p>Conditional Co-Ablation · a mechanistic-interpretability study of self-repair.
-    Figures are from the paper; the interactive plot, the video, and every number are reproduced by the
+  <div class="wrap narrow"><p>Conditional Co-Ablation &middot; a mechanistic-interpretability study of
+    self-repair. Figures are from the paper; every number is reproduced by the
     <a href="https://github.com/GongZhiren/Conditional-Co-Ablation">released code</a>.</p></div>
 </footer>
 
 <div id="lightbox"><img id="lightbox-img" alt="figure"/></div>
-<div id="tooltip" class="tooltip"></div>
-<script defer src="data.js"></script>
-<script defer src="app.js"></script>
+
+<script src="app.js"></script>
 </body>
 </html>

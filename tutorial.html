@@ -26,11 +26,11 @@
 
 <header class="hero tut-hero">
   <div class="wrap narrow">
-    <div class="tag">Video tutorial · about 7½ minutes</div>
+    <div class="tag">Video tutorial &middot; about 10 minutes</div>
     <h1>A guided tour of CoAx</h1>
     <p class="subtitle">Narrated, animated, and subtitled — built from the ground up for a general
-      audience: what interpretability is, the self-repair blind spot, and how one conditional
-      question recovers the hidden backups.</p>
+      audience: what a circuit is, why self-repair breaks the test we use to find one, and how a
+      single conditional question recovers the hidden backup branch and completes the circuit.</p>
   </div>
 </header>
 
@@ -49,17 +49,18 @@
         <h4>Chapters</h4>
         <ul>
           <li><button data-t="0"><span>0:00</span> Introduction</button></li>
-          <li><button data-t="22"><span>0:22</span> I &middot; Inside a language model</button></li>
+          <li><button data-t="23"><span>0:23</span> I &middot; Inside a language model</button></li>
           <li><button data-t="63"><span>1:03</span> How we find a circuit</button></li>
-          <li><button data-t="100"><span>1:40</span> II &middot; The self-repair trap</button></li>
-          <li><button data-t="149"><span>2:29</span> Why the blind spot matters</button></li>
-          <li><button data-t="189"><span>3:09</span> III &middot; The conditional question</button></li>
-          <li><button data-t="229"><span>3:49</span> Synergy &amp; the hidden module</button></li>
-          <li><button data-t="260"><span>4:20</span> IV &middot; Recovering the backups</button></li>
-          <li><button data-t="303"><span>5:03</span> Are they real backups?</button></li>
-          <li><button data-t="332"><span>5:32</span> Repairing the downstream tools</button></li>
-          <li><button data-t="389"><span>6:29</span> V &middot; How far it goes</button></li>
-          <li><button data-t="419"><span>6:59</span> Takeaway</button></li>
+          <li><button data-t="103"><span>1:43</span> II &middot; The self-repair trap</button></li>
+          <li><button data-t="159"><span>2:39</span> A circuit incomplete under its own test</button></li>
+          <li><button data-t="201"><span>3:21</span> III &middot; The conditional question</button></li>
+          <li><button data-t="239"><span>3:59</span> Why conditioning is the right instrument</button></li>
+          <li><button data-t="300"><span>5:00</span> IV &middot; Recovering the backups</button></li>
+          <li><button data-t="355"><span>5:55</span> Is it really about this circuit?</button></li>
+          <li><button data-t="411"><span>6:51</span> Do they carry the repair?</button></li>
+          <li><button data-t="460"><span>7:40</span> V &middot; Completing the circuit</button></li>
+          <li><button data-t="516"><span>8:36</span> How far it goes</button></li>
+          <li><button data-t="559"><span>9:19</span> Takeaway</button></li>
         </ul>
         <p class="chap-note">Captions are on by default; audio is a synthesized narration. Download:
           <a href="assets/tutorial.mp4">MP4</a> · <a href="assets/tutorial.srt">SRT</a></p>
@@ -73,12 +74,15 @@
     <span class="kicker">In this tour you'll see</span>
     <h2>What the tutorial covers</h2>
     <div class="takeaways">
-      <div class="tk"><div class="tk-n">1</div><p><b>Why first-order fails.</b> Self-repair makes a
-        dormant backup absorb the damage, so both the primary and the backup look unimportant.</p></div>
+      <div class="tk"><div class="tk-n">1</div><p><b>Why the standard test fails.</b> Ablation is an
+        intervention: a dormant backup absorbs the damage, so the primary and the backup both look
+        unimportant — and the circuit becomes incomplete under its own test.</p></div>
       <div class="tk"><div class="tk-n">2</div><p><b>The conditional-growth score.</b> How much each
-        unit's ablation effect grows once the primary set is removed — label-free, gradient-free.</p></div>
-      <div class="tk"><div class="tk-n">3</div><p><b>That it works and matters.</b> 0.33&rarr;0.91 backup
-        recovery, a causal wake-up, and repair-aware attribution, knockout, and pruning.</p></div>
+        unit's ablation effect grows once the primary set is removed — label-free, gradient-free —
+        plus the two results that say conditioning is the right instrument.</p></div>
+      <div class="tk"><div class="tk-n">3</div><p><b>That it works, and that it matters.</b> 0.941
+        backup recovery with a matched-impostor control at chance, a causal wake-up test, and circuit
+        incompleteness cut from 0.75 to 0.21.</p></div>
     </div>
     <div class="res-links" style="margin-top:26px">
       <a class="res" href="index.html"><b>Full project page</b><span>interactive figures &amp; analysis</span></a>
