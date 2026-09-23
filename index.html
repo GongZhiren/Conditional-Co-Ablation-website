@@ -70,7 +70,7 @@
     </div>
     <div class="headline-stat">
       <div class="stat">
-        <div class="stat-row"><span class="lab">strongest intact-state baseline</span><span class="v bad" data-count="0.815">0.815</span></div>
+        <div class="stat-row"><span class="lab">strongest intact-state baseline</span><span class="v bad" data-count="0.665">0.665</span></div>
         <div class="arrow">backup-recovery ROC-AUC&nbsp;&rarr;</div>
         <div class="stat-row"><span class="lab">CoAx (ours)</span><span class="v good" data-count="0.941">0.941</span></div>
       </div>
@@ -196,23 +196,28 @@
         <table class="rtable">
           <thead><tr><th>score</th><th>backup ROC-AUC</th></tr></thead>
           <tbody>
-            <tr><td>AtP <span class="ord">intact</span></td><td>0.600</td></tr>
+            <tr><td>AtP <span class="ord">intact</span></td><td>0.650</td></tr>
             <tr><td>single ablation <span class="ord">intact</span></td><td>0.603</td></tr>
-            <tr><td>conditional gradient <span class="ord">removed</span></td><td>0.626</td></tr>
-            <tr><td>EAP-IG <span class="ord">intact</span></td><td>0.700</td></tr>
+            <tr><td>conditional gradient <span class="ord">removed</span></td><td>0.767</td></tr>
+            <tr><td>activation-space EAP-IG <span class="ord">intact</span></td><td>0.581</td></tr>
             <tr><td>conditional energy <span class="ord">removed</span></td><td>0.758</td></tr>
-            <tr><td>AtP* GradDrop <span class="ord">intact</span></td><td>0.815</td></tr>
+            <tr><td>AtP* GradDrop <span class="ord">intact</span></td><td>0.665</td></tr>
             <tr class="win"><td>CoAx <span class="ord ours">intact&rarr;removed</span></td><td><b>0.941</b></td></tr>
           </tbody>
         </table>
-        <p><b>The gain is the two-state contrast</b> &mdash; not a stronger scorer, and not reading the
-          intervened model alone. CoAx improves by <b>0.126</b> over the strongest intact-state attribution
-          baseline and by <b>0.183</b> over the matched conditional-energy control. Under the 8/141 class
-          imbalance the separation is starker in average precision: <b>0.557</b> versus <b>0.174</b> for
+        <p><b>The gain is the two-state contrast</b> &mdash; not simply reading the intervened model alone.
+          CoAx improves by <b>0.276</b> over the strongest intact-state attribution baseline and by
+          <b>0.174</b> over the strongest removed-state control. Applying the same contrast to AtP* reaches
+          <b>0.938</b>, confirming that conditioning carries the central signal; CoAx measures the exact
+          finite, full-distribution intervention effect without task gradients. Under the 8/141 class
+          imbalance the separation is starker in average precision: <b>0.557</b> versus <b>0.098</b> for
           AtP*.</p>
         <p>Holding the contrast fixed and replacing the Fisher geometry with plain
           <span class="mono">&#8467;<sub>2</sub></span> still gives 0.905, so conditioning carries the main
           signal and the geometry sharpens it.</p>
+        <p class="small">The component analysis also evaluates a normalized CoAx variant (0.984 AUC).
+          It is not a separate baseline: signed growth is the default because it has the exact interaction
+          decomposition, transfers directly across mechanisms, and avoids division by near-zero intact effects.</p>
       </div>
       <figure class="figure zoom split-fig"><img src="assets/fig_separation.png" alt="Intact-state versus conditional scoring"/>
         <figcaption><b>The same eight backups, two scores.</b> Every head placed by intact-state scoring and
@@ -308,15 +313,17 @@
         <table class="rtable">
           <thead><tr><th>circuit</th><th>incompleteness <span class="mono">D(C)</span> &darr;</th></tr></thead>
           <tbody>
-            <tr><td>primary circuit (backup branch removed)</td><td>0.755&nbsp;&plusmn;&nbsp;0.074</td></tr>
-            <tr><td>documented circuit</td><td>0.276&nbsp;&plusmn;&nbsp;0.027</td></tr>
-            <tr class="win"><td>+ CoAx top-8</td><td><b>0.205&nbsp;&plusmn;&nbsp;0.030</b></td></tr>
-            <tr><td>+ random top-8</td><td>0.808&nbsp;&plusmn;&nbsp;0.206</td></tr>
+            <tr><td>primary circuit (backup branch removed)</td><td>0.474&nbsp;&plusmn;&nbsp;0.030</td></tr>
+            <tr><td>documented circuit</td><td>0.300&nbsp;&plusmn;&nbsp;0.027</td></tr>
+            <tr><td>+ conditional energy top-8</td><td><b>0.181&nbsp;&plusmn;&nbsp;0.027</b></td></tr>
+            <tr class="win"><td>+ CoAx top-8</td><td>0.236&nbsp;&plusmn;&nbsp;0.037</td></tr>
+            <tr><td>+ normalized CoAx variant top-8</td><td>0.258&nbsp;&plusmn;&nbsp;0.035</td></tr>
+            <tr><td>+ random top-8</td><td>0.499&nbsp;&plusmn;&nbsp;0.073</td></tr>
           </tbody>
         </table>
-        <p>Adding the label-free CoAx set reduces incompleteness from <b>0.75 to 0.21</b>. It does more than
-          localize backup components: it restores the missing counterfactual response, turning backup
-          localization into circuit completion.</p>
+        <p>Adding the label-free CoAx set reduces incompleteness from <b>0.47 to 0.24</b>. Conditional
+          energy gives a smaller scalar gap but a much worse backup-role knockout, separating response
+          magnitude from branch identity.</p>
       </div>
       <div class="split-text">
         <h4>Backup-role knockout</h4>
@@ -324,11 +331,13 @@
           <thead><tr><th>top-up</th><th>margin dist. &darr;</th><th>output KL &darr;</th><th>unrel. KL &darr;</th></tr></thead>
           <tbody>
             <tr><td>documented backups</td><td>0.00</td><td>0.00</td><td>0.09</td></tr>
-            <tr class="win"><td>+ CoAx</td><td><b>0.99</b></td><td><b>0.17</b></td><td><b>0.14</b></td></tr>
+            <tr class="win"><td>+ CoAx</td><td><b>0.99</b></td><td>0.17</td><td>0.14</td></tr>
+            <tr><td>+ normalized CoAx variant</td><td><b>0.99</b></td><td><b>0.07</b></td><td><b>0.09</b></td></tr>
+            <tr><td>+ conditional energy</td><td>1.71</td><td>0.46</td><td>0.47</td></tr>
             <tr><td>+ co-activation</td><td>1.79</td><td>0.47</td><td>0.15</td></tr>
-            <tr><td>+ CoAx next-8</td><td>2.24</td><td>0.64</td><td>0.54</td></tr>
-            <tr><td>+ AtP* GradDrop</td><td>2.62</td><td>0.82</td><td>0.31</td></tr>
-            <tr><td>+ random</td><td>1.27</td><td>0.43</td><td>0.15</td></tr>
+            <tr><td>+ CoAx next-8</td><td>2.03</td><td>1.38</td><td>0.86</td></tr>
+            <tr><td>+ AtP* GradDrop</td><td>2.70</td><td>1.02</td><td>0.47</td></tr>
+            <tr><td>+ random</td><td>1.24</td><td>0.47</td><td>0.24</td></tr>
           </tbody>
         </table>
         <p>Reversing the intervention: removing the selected set should reproduce the <em>documented</em>
@@ -366,7 +375,7 @@
       <div class="tk"><div class="tk-n">8 / 8</div><p><b>Across models</b><br>completion beats a size-matched
         random set on every non-GPT-2 model &mdash; Pythia 160M/410M/1.4B, GPT-Neo 1.3B, Gemma-2 2B,
         Qwen2.5 7B, OLMo-2 7B, Llama-3.1 8B &mdash; and beats each model's own next induction heads on
-        6 of 8</p></div>
+        5 of 8</p></div>
     </div>
   </div>
   <div class="wrap reveal">
@@ -396,7 +405,7 @@
         &#8467;<sub>2</sub> reaches 0.905, centering alone 0.903 and probability weighting alone 0.909, while
         the full centered Fisher geometry reaches 0.941 &mdash; the two ingredients only pay off together.
         <b>(c)</b> As backups move off the task direction, full-distribution CoAx stays stable while the
-        conditional gradient deteriorates and AtP* stays near chance.</figcaption></figure>
+        conditional gradient and an intact task-gradient proxy deteriorate; the latter stays near chance.</figcaption></figure>
   </div>
 </section>
 

@@ -41,30 +41,30 @@ It needs no labels and no gradients — only forward passes: run the model with 
 Two results ground this: a dormant backup is provably invisible to any score reading only the intact model — and conditioning recovers the interactions linking a head to what you removed.
 
 11
-00:01:48.112 --> 00:02:04.264
-The evidence. On a circuit with eight documented backups, scores reading the intact model reach only 0.6 to 0.82; reading the ablated model, 0.76. CoAx compares the two states and reaches 0.941.
+00:01:48.112 --> 00:02:04.672
+The evidence. On a circuit with eight documented backups, scores reading the intact model reach only 0.58 to 0.67; reading the ablated model, 0.76. CoAx compares the two states and reaches 0.941.
 
 12
-00:02:04.684 --> 00:02:15.724
+00:02:05.092 --> 00:02:16.132
 Is it really about this circuit? Sixteen impostor sets matched for damage and depth recover the backups at only about 0.4, while the true primaries stay at 0.94.
 
 13
-00:02:16.144 --> 00:02:28.192
+00:02:16.552 --> 00:02:28.600
 And they're causal. Remove the primaries one by one and CoAx's heads wake up and write the answer; freeze them and the margin drops 0.9, versus 0.27 for random. They carry the repair.
 
 14
-00:02:28.612 --> 00:02:40.636
-This completes the explanation. The documented circuit's incompleteness is 0.75; adding the eight heads CoAx found — same ranking, no labels — brings it down to 0.21.
+00:02:29.020 --> 00:02:40.780
+This completes the explanation. The primary circuit's incompleteness is 0.47; adding the eight heads CoAx found — same ranking, no labels — brings it down to 0.24.
 
 15
-00:02:40.816 --> 00:02:51.616
+00:02:40.960 --> 00:02:51.760
 And it works in reverse: remove those recovered heads and the damage closely reproduces removing the documented backups — so they play the missing branch's causal role, not just rank well.
 
 16
-00:02:52.036 --> 00:03:02.764
+00:02:52.180 --> 00:03:02.908
 And it generalizes: the conditional signal matches a label-free causal target in eleven of twelve held-out cases, and beats random on eight models across six architecture families.
 
 17
-00:03:03.184 --> 00:03:15.544
+00:03:03.328 --> 00:03:15.688
 The lesson is about measurement: importance isn't fixed — it's conditional on what else is present. The parts that matter most often stay silent until needed, so measuring them alone misses them.
 
