@@ -147,32 +147,71 @@
   </div>
   <div class="wrap reveal">
     <style>
-    .cxv{max-width:860px;margin:6px auto 0;border:1px solid var(--line,#dce3ee);border-radius:16px;
+    .cxv{max-width:980px;margin:6px auto 0;border:1px solid var(--line,#dce3ee);border-radius:18px;
       background:var(--bg-card,#fff);padding:20px 22px;box-shadow:var(--shadow,0 14px 34px rgba(40,70,120,.1))}
-    .cxv-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+    .cxv-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap}
     .cxv-badge{font:700 11px/1 ui-sans-serif,Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#fff;
-      background:linear-gradient(120deg,var(--blue,#3f7fe0),var(--green,#22a06b));padding:6px 12px;border-radius:999px}
-    .cxv-phase{font:700 13px/1 Inter,sans-serif;color:var(--ink-soft,#5b6b82)}
-    .cxv-body{display:grid;grid-template-columns:230px 1fr;gap:26px;align-items:center}
-    @media(max-width:720px){.cxv-body{grid-template-columns:1fr}}
-    .cxv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .cxv-node{aspect-ratio:1;border-radius:12px;border:2px solid var(--line,#dce3ee);display:grid;place-items:center;
-      font:700 12px/1 Inter;color:#8695ab;background:#f3f6fb;position:relative;transition:all .55s cubic-bezier(.2,.7,.2,1)}
-    .cxv-node small{position:absolute;bottom:5px;font-size:9px;font-weight:700;opacity:0;transition:opacity .4s}
-    .cxv-rank{display:flex;flex-direction:column;gap:9px}
-    .cxv-row{display:grid;grid-template-columns:62px 1fr 42px;align-items:center;gap:10px;font:600 12px/1 Inter;color:var(--ink-soft,#5b6b82)}
-    .cxv-track{height:12px;border-radius:7px;background:rgba(120,140,170,.14);overflow:hidden}
-    .cxv-track i{display:block;height:100%;width:0;border-radius:7px;transition:width .7s cubic-bezier(.2,.7,.2,1),background .5s}
-    .cxv-note{margin:15px 2px 0;font-size:13px;color:var(--ink-soft,#5b6b82);line-height:1.6}
+      background:linear-gradient(120deg,var(--blue,#3f7fe0),var(--green,#22a06b));padding:6px 12px;border-radius:999px;flex:none}
+    .cxv-thesis{font:500 14px/1.5 Inter,sans-serif;color:var(--ink-soft,#5b6b82)}
+    .cxv-thesis b{color:var(--ink,#1a2740);font-weight:700}
+    .cxv-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media(max-width:760px){.cxv-cols{grid-template-columns:1fr}}
+    .cxv-pan{border:1px solid var(--line,#dce3ee);border-radius:14px;padding:15px 16px 16px;background:linear-gradient(180deg,rgba(247,250,254,.6),transparent);position:relative}
+    .cxv-pan.b{border-color:color-mix(in srgb,var(--green,#22a06b) 34%,var(--line,#dce3ee));background:linear-gradient(180deg,color-mix(in srgb,var(--green,#22a06b) 6%,transparent),transparent)}
+    .cxv-pt{font:700 13.5px/1.3 Inter;color:var(--ink,#1a2740);margin:0 0 2px;display:flex;align-items:center;gap:8px}
+    .cxv-pt .tag{font:700 9.5px/1 Inter;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:6px}
+    .cxv-pt .tag.p{background:rgba(229,72,77,.12);color:#c0392f}
+    .cxv-pt .tag.f{background:color-mix(in srgb,var(--green,#22a06b) 15%,transparent);color:#15794f}
+    .cxv-ps{font:500 11.8px/1.45 Inter;color:var(--ink-soft,#5b6b82);margin:0 0 13px;min-height:17px}
+    .cxv-ps code{font:600 11px/1 ui-monospace,monospace;background:rgba(120,140,170,.12);padding:1px 5px;border-radius:5px;color:var(--ink,#1a2740)}
+    .cxv-chart{position:relative}
+    .cxv-row{display:grid;grid-template-columns:58px 1fr 46px;align-items:center;gap:9px;font:600 11.5px/1 Inter;color:var(--ink-soft,#5b6b82);margin-bottom:9px}
+    .cxv-track{position:relative;height:15px;border-radius:8px;background:rgba(120,140,170,.12);overflow:hidden}
+    .cxv-base{position:absolute;left:0;top:0;height:100%;width:0;border-radius:8px;background:#c2ccdb;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+    .cxv-grow{position:absolute;top:0;height:100%;width:0;left:0;border-radius:8px;transition:width .8s cubic-bezier(.2,.7,.2,1),left .8s cubic-bezier(.2,.7,.2,1);
+      background:linear-gradient(90deg,color-mix(in srgb,var(--green,#22a06b) 65%,#fff),var(--green,#22a06b))}
+    .cxv-val{text-align:right;font:700 11.5px/1 Inter;color:var(--ink,#1a2740);font-variant-numeric:tabular-nums}
+    .cxv-thr{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed #9aa7bb;opacity:0;transition:opacity .5s}
+    .cxv-thr span{position:absolute;top:-16px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 8.5px/1 Inter;letter-spacing:.04em;color:#8695ab;text-transform:uppercase}
+    .cxv-foot{margin:11px 0 0;font:500 11.5px/1.5 Inter;color:var(--ink-soft,#5b6b82)}
+    .cxv-foot b{color:var(--ink,#1a2740)}
+    .cxv-foot .dn{color:#c0392f;font-weight:700}.cxv-foot .up{color:#15794f;font-weight:700}
+    .cxv-sset{display:flex;gap:6px;margin-left:auto;align-items:center}
+    .cxv-chip{font:700 10px/1 Inter;padding:4px 8px;border-radius:7px;border:1.5px solid var(--blue,#3f7fe0);color:var(--blue,#3f7fe0);background:color-mix(in srgb,var(--blue,#3f7fe0) 8%,transparent);transition:all .5s}
+    .cxv-chip.gone{border-color:#e5484d;color:#c0392f;background:rgba(229,72,77,.1);text-decoration:line-through;opacity:.8}
+    .cxv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    @media(max-width:620px){.cxv-stats{grid-template-columns:1fr}}
+    .cxv-stat{border:1px solid var(--line,#dce3ee);border-radius:12px;padding:12px 14px;text-align:center;background:var(--bg-card,#fff)}
+    .cxv-stat .big{font:800 22px/1 Inter;color:var(--ink,#1a2740);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+    .cxv-stat .big .g{color:#15794f}.cxv-stat .arrow{color:#9aa7bb;font-weight:600;margin:0 3px}
+    .cxv-stat .lab{font:600 10.5px/1.35 Inter;color:var(--ink-soft,#5b6b82);margin-top:5px}
+    .cxv-note{margin:15px 2px 0;font-size:13px;color:var(--ink-soft,#5b6b82);line-height:1.65}
     .cxv-note b{color:var(--ink,#1a2740)}
     </style>
     <figure class="cxv">
-      <div class="cxv-head"><span class="cxv-badge">CoAx · live</span><span class="cxv-phase" id="cxvPhase"></span></div>
-      <div class="cxv-body">
-        <div class="cxv-grid" id="cxvGrid"></div>
-        <div class="cxv-rank" id="cxvRank"></div>
+      <div class="cxv-head"><span class="cxv-badge">CoAx · live</span>
+        <span class="cxv-thesis">Self-repair lets a backup head sit silent until it is needed, so single-head ablation rates it like noise. CoAx <b>ablates the primary set first, then ranks every head by how much its effect grows</b>.</span></div>
+      <div class="cxv-cols">
+        <div class="cxv-pan a">
+          <p class="cxv-pt"><span class="tag p">The problem</span> Single-head ablation on the intact model</p>
+          <p class="cxv-ps">Ablate each candidate alone. A dormant backup barely moves the output, so it scores like an irrelevant head.</p>
+          <div class="cxv-chart" id="cxvA"></div>
+          <p class="cxv-foot">Nothing clears the detection bar &rarr; backups missed, circuit <b>incompleteness <span class="dn">0.75</span></b>.</p>
+        </div>
+        <div class="cxv-pan b">
+          <p class="cxv-pt"><span class="tag f">The fix</span> Conditional co-ablation
+            <span class="cxv-sset"><span class="cxv-chip" id="cxvChip">ablate S</span></span></p>
+          <p class="cxv-ps">Remove <code>S</code>, then re-score by the <b>growth</b> &Delta; of each head's ablation effect. Self-repair forces the backups to carry the behaviour.</p>
+          <div class="cxv-chart" id="cxvB"></div>
+          <p class="cxv-foot">The two backups surge past the bar &rarr; recovered at <b class="up">0.941</b> ROC-AUC.</p>
+        </div>
       </div>
-      <p class="cxv-note" id="cxvNote"></p>
+      <div class="cxv-stats">
+        <div class="cxv-stat"><div class="big" id="cxvRoc">—</div><div class="lab">ROC-AUC recovering GPT-2 IOI self-repair backups</div></div>
+        <div class="cxv-stat"><div class="big"><span id="cxvI0">—</span><span class="arrow">&rarr;</span><span class="g" id="cxvI1">—</span></div><div class="lab">circuit incompleteness, before &rarr; after CoAx</div></div>
+        <div class="cxv-stat"><div class="big">forward<span class="arrow">·</span>only</div><div class="lab">label-free ranking, no gradients or training</div></div>
+      </div>
+      <p class="cxv-note" id="cxvNote">On the intact model a dormant <b>backup</b> and an <b>irrelevant</b> head look identical. CoAx conditions on removing the primary set <b>S</b>, so a backup's suppressed contribution reappears as measurable <b>growth</b> &mdash; recovering self-repair components that intact-state scores cannot see.</p>
     </figure>
   </div>
 
@@ -485,56 +524,66 @@
 /* CoAx live: on the intact model a dormant backup looks identical to an irrelevant
    head; ablate the primary set S and the backup's effect GROWS — CoAx ranks by that. */
 (function(){
-  var grid=document.getElementById('cxvGrid'); if(!grid) return;
-  var rankEl=document.getElementById('cxvRank'), phaseEl=document.getElementById('cxvPhase'), noteEl=document.getElementById('cxvNote');
-  /* 9 heads: 2 primary (S), 2 dormant backups, 5 irrelevant */
-  var ROLE=['S','irr','backup','irr','S','irr','backup','irr','irr'];
-  var nodes=ROLE.map(function(r,i){
-    var d=document.createElement('div'); d.className='cxv-node';
-    d.innerHTML='h<sub>'+(i+1)+'</sub><small></small>'; grid.appendChild(d); return d;
-  });
-  var RANK=[
-    {lab:'backup a', role:'backup'},
-    {lab:'backup b', role:'backup'},
-    {lab:'head · irr', role:'irr'},
-    {lab:'head · irr', role:'irr'}
+  var A=document.getElementById('cxvA'), B=document.getElementById('cxvB'); if(!A||!B) return;
+  var chip=document.getElementById('cxvChip');
+  var HEADS=[
+    {lab:'backup α', b:true,  intact:0.06, cond:0.77},
+    {lab:'backup β', b:true,  intact:0.04, cond:0.61},
+    {lab:'head γ',   b:false, intact:0.08, cond:0.11},
+    {lab:'head δ',   b:false, intact:0.05, cond:0.07},
+    {lab:'head ε',   b:false, intact:0.03, cond:0.05}
   ];
-  var rows=RANK.map(function(r){
-    var row=document.createElement('div'); row.className='cxv-row';
-    row.innerHTML='<span>'+r.lab+'</span><span class="cxv-track"><i></i></span><span class="val" style="text-align:right">—</span>';
-    rankEl.appendChild(row); return {fill:row.querySelector('i'),val:row.querySelector('.val')};
-  });
-  var C={S:'#3f7fe0', backup:'#22a06b', irr:'#9aa7bb', red:'#e5484d'};
-  function style(d,bg,border,color,glow){d.style.background=bg;d.style.borderColor=border;d.style.color=color;
-    d.style.boxShadow=glow?('0 0 0 3px '+glow+'33, 0 6px 18px '+glow+'44'):'none';}
-  function label(i,txt,col){var s=nodes[i].querySelector('small');s.textContent=txt;s.style.color=col;s.style.opacity=txt?1:0;}
-  function phase0(){ /* intact: primary strong, everything else identical faint */
-    phaseEl.textContent='① intact model — the backup hides in plain sight';
-    nodes.forEach(function(d,i){ if(ROLE[i]==='S'){style(d,'#eaf2fd','#3f7fe0','#2f66c0',C.S);label(i,'S',C.S);}
-      else {style(d,'#f3f6fb','#dce3ee','#8695ab',null);label(i,'',null);} });
-    rows.forEach(function(r){r.fill.style.width='18%';r.fill.style.background='#c2ccdb';r.val.textContent='≈';});
-    noteEl.innerHTML='On the intact model a dormant <b>backup</b> and an <b>irrelevant</b> head look identical — every intact-state score is blind to the difference.';
+  var SCALE=0.88, THR=0.15, thrPct=(THR/SCALE*100).toFixed(1);
+  function build(el,grow){
+    return HEADS.map(function(h){
+      var row=document.createElement('div'); row.className='cxv-row';
+      row.innerHTML='<span>'+h.lab+'</span><span class="cxv-track">'
+        +'<span class="cxv-base"></span>'+(grow?'<span class="cxv-grow"></span>':'')
+        +'<span class="cxv-thr" style="left:'+thrPct+'%"><span>detect</span></span></span>'
+        +'<span class="cxv-val">—</span>';
+      el.appendChild(row);
+      return {base:row.querySelector('.cxv-base'),grow:row.querySelector('.cxv-grow'),
+              thr:row.querySelector('.cxv-thr'),val:row.querySelector('.cxv-val')};
+    });
   }
-  function phase1(){ /* ablate S */
-    phaseEl.textContent='② ablate the primary set S';
-    nodes.forEach(function(d,i){ if(ROLE[i]==='S'){style(d,'#fdecec','#e5484d','#c0392f',C.red);label(i,'ablated',C.red);} });
-    noteEl.innerHTML='Remove the analyst-supplied primary set <b>S</b> — self-repair now reroutes the behaviour through whatever was holding back.';
+  var rowsA=build(A,false), rowsB=build(B,true);
+  function pct(v){return (v/SCALE*100).toFixed(1)+'%';}
+  function countUp(el,to,dur,dec,pre,suf){
+    var t0=null; dec=dec||0; pre=pre||''; suf=suf||'';
+    function f(ts){ if(!t0)t0=ts; var k=Math.min(1,(ts-t0)/dur), e=1-Math.pow(1-k,3);
+      el.textContent=pre+(to*e).toFixed(dec)+suf; if(k<1)requestAnimationFrame(f); }
+    requestAnimationFrame(f);
   }
-  function phase2(){ /* backups wake up */
-    phaseEl.textContent='③ backups wake up — CoAx ranks by the growth';
-    nodes.forEach(function(d,i){ if(ROLE[i]==='backup'){style(d,'#e7f7ef','#22a06b','#15794f',C.backup);label(i,'effect ↑',C.backup);} });
-    var vals=[0.94,0.88,0.21,0.17], cols=[C.backup,C.backup,C.irr,C.irr];
-    rows.forEach(function(r,k){r.fill.style.width=Math.round(vals[k]*100)+'%';r.fill.style.background=cols[k];r.val.textContent=vals[k].toFixed(2);});
-    noteEl.innerHTML='Once <b>S</b> is gone the backups’ ablation effect <b>grows</b>; CoAx scores every candidate by that growth and <b>completes</b> the circuit — label-free, forward-only.';
+  function reset(){
+    rowsA.forEach(function(r){r.base.style.width='0';r.thr.style.opacity=0;r.val.textContent='—';r.val.style.color='';});
+    rowsB.forEach(function(r){r.base.style.width='0';r.grow.style.width='0';r.grow.style.left='0';r.thr.style.opacity=0;r.val.textContent='—';r.val.style.color='';});
+    chip.className='cxv-chip'; chip.textContent='ablate S';
+    document.getElementById('cxvRoc').textContent='—';
+    document.getElementById('cxvI0').textContent='—';
+    document.getElementById('cxvI1').textContent='—';
+  }
+  function fillA(){ rowsA.forEach(function(r,k){ var h=HEADS[k];
+    r.base.style.width=pct(h.intact); r.thr.style.opacity=1; r.val.textContent=h.intact.toFixed(2); }); }
+  function ablateS(){ chip.className='cxv-chip gone'; chip.textContent='S ablated'; }
+  function fillB(){ rowsB.forEach(function(r,k){ var h=HEADS[k];
+    r.base.style.width=pct(h.intact); r.thr.style.opacity=1;
+    setTimeout(function(){ r.grow.style.left=pct(h.intact); r.grow.style.width=pct(h.cond-h.intact);
+      r.val.textContent=h.cond.toFixed(2); if(h.b)r.val.style.color='#15794f'; }, 260); }); }
+  function fillStats(){
+    countUp(document.getElementById('cxvRoc'),0.941,900,3);
+    document.getElementById('cxvI0').textContent='0.75';
+    countUp(document.getElementById('cxvI1'),0.21,900,2);
+  }
+  function run(){ reset();
+    setTimeout(fillA,250); setTimeout(ablateS,2300); setTimeout(fillB,3100);
+    setTimeout(fillStats,4500); setTimeout(run,9500);
   }
   var reduce=false; try{reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;}catch(e){}
-  if(reduce){ phase0(); phase1(); phase2(); return; }
-  var seq=[phase0,phase1,phase2], i=0, started=false;
-  function tick(){ seq[i](); i=(i+1)%seq.length; setTimeout(tick, i===0?3200:2300); }
-  function start(){ if(started)return; started=true; tick(); }
+  if(reduce){ fillA(); ablateS(); fillB(); fillStats(); return; }
+  var started=false; function start(){ if(started)return; started=true; run(); }
   if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting){start();io.disconnect();}});},{threshold:.3});
-    io.observe(grid);
+    var io=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting){start();io.disconnect();}});},{threshold:.25});
+    io.observe(A);
   } else start();
 })();
 </script>
