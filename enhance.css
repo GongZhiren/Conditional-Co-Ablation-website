@@ -1,0 +1,88 @@
+/* ============================================================================
+   Premium enhancement layer — shared across all project websites.
+   Purely ADDITIVE and theme-aware: it reads each site's existing CSS tokens
+   (with safe fallbacks) so it never fights the per-site palette or layout.
+   Everything motion-related is gated behind html.x-js (set by enhance.js) so
+   the page degrades gracefully with JS off and respects reduced-motion.
+   ============================================================================ */
+:root{
+  --x-accent:  var(--cyan, var(--teal, var(--violet, var(--rose-strong, var(--rose, var(--gold, var(--blue, #5e8dff)))))));
+  --x-accent2: var(--mint, var(--blue, var(--teal, var(--green, var(--violet, #63dfbf)))));
+  --x-ink:    var(--ink, #10203a);
+  --x-soft:   var(--ink-soft, var(--ink-faint, #42536f));
+  --x-line:   var(--line, rgba(100,130,170,.22));
+  --x-panel:  var(--panel, var(--card, var(--bg-card, rgba(255,255,255,.9))));
+  --x-shadow: var(--shadow, 0 14px 34px rgba(93,126,168,.14));
+}
+
+/* ---- reading-progress bar ------------------------------------------------ */
+.x-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;pointer-events:none;
+  background:linear-gradient(90deg,var(--x-accent),var(--x-accent2));
+  box-shadow:0 0 12px var(--x-accent);transition:width .08s linear;border-radius:0 2px 2px 0;}
+
+/* ---- back-to-top --------------------------------------------------------- */
+.x-top{position:fixed;right:22px;bottom:22px;z-index:150;width:46px;height:46px;border-radius:50%;
+  border:1px solid var(--x-line);background:var(--x-panel);color:var(--x-accent);
+  display:grid;place-items:center;cursor:pointer;opacity:0;transform:translateY(14px) scale(.9);
+  transition:opacity .3s,transform .3s,border-color .3s;box-shadow:var(--x-shadow);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:21px;line-height:1;}
+.x-top.show{opacity:1;transform:none;}
+.x-top:hover{transform:translateY(-3px);border-color:var(--x-accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--x-accent) 16%,transparent),var(--x-shadow);}
+
+/* ---- scroll-reveal (only when JS active) --------------------------------- */
+html.x-js .x-reveal{opacity:0;transform:translateY(26px);will-change:opacity,transform;
+  transition:opacity .72s cubic-bezier(.2,.7,.2,1),transform .72s cubic-bezier(.2,.7,.2,1);}
+html.x-js .x-reveal.x-in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){
+  html.x-js .x-reveal{opacity:1!important;transform:none!important;transition:none!important;}
+}
+
+/* ---- universal micro-interactions ---------------------------------------- */
+html.x-js .card{transition:transform .38s cubic-bezier(.2,.7,.2,1),box-shadow .38s,border-color .38s;}
+html.x-js .card:hover{transform:translateY(-4px);
+  box-shadow:0 24px 50px rgba(40,70,120,.17);border-color:color-mix(in srgb,var(--x-accent) 40%,var(--x-line));}
+html.x-js .figure-card{overflow:hidden;}
+html.x-js .figure-card img{transition:transform .55s cubic-bezier(.2,.7,.2,1);}
+html.x-js .figure-card:hover img{transform:scale(1.018);}
+/* resource cards get an accent sweep on hover */
+html.x-js .resource-card{position:relative;overflow:hidden;}
+html.x-js .resource-card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1);
+  background:linear-gradient(90deg,var(--x-accent),var(--x-accent2));}
+html.x-js .resource-card:hover::after{transform:scaleX(1);}
+
+/* ---- nav scroll-spy underline ------------------------------------------- */
+.topbar nav a{position:relative;}
+.topbar nav a::after{content:"";position:absolute;left:8px;right:8px;bottom:2px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--x-accent),var(--x-accent2));
+  transform:scaleX(0);transform-origin:center;transition:transform .28s cubic-bezier(.2,.7,.2,1);}
+.topbar nav a:hover::after,.topbar nav a.x-active::after{transform:scaleX(1);}
+.topbar nav a.x-active{color:var(--x-accent);}
+
+/* ---- section outline rail (DN-MOPD-style) -------------------------------- */
+.x-rail{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:120;
+  display:flex;flex-direction:column;gap:15px;align-items:flex-end;}
+.x-rail a{width:10px;height:10px;border-radius:50%;border:1.7px solid var(--x-line);
+  background:transparent;position:relative;transition:.25s;}
+.x-rail a::after{content:attr(data-label);position:absolute;right:20px;top:50%;
+  transform:translateY(-50%) translateX(6px);white-space:nowrap;
+  font:600 11.5px/1 Inter,system-ui,sans-serif;letter-spacing:.01em;color:var(--x-soft);
+  background:var(--x-panel);border:1px solid var(--x-line);padding:5px 10px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;box-shadow:var(--x-shadow);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.x-rail a:hover{border-color:var(--x-accent);transform:scale(1.25);}
+.x-rail a:hover::after{opacity:1;transform:translateY(-50%);}
+.x-rail a.on{background:var(--x-accent);border-color:var(--x-accent);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--x-accent) 22%,transparent);}
+@media (max-width:1380px){.x-rail{display:none;}}
+
+/* ---- author name -> personal site --------------------------------------- */
+.x-me{color:inherit;text-decoration:none;font-weight:700;
+  background-image:linear-gradient(90deg,var(--x-accent),var(--x-accent2));
+  background-size:100% 1.5px;background-repeat:no-repeat;background-position:0 100%;
+  padding-bottom:1.5px;transition:color .2s;}
+.x-me:hover{color:var(--x-accent);}
+
+/* ---- gentle entrance for the sticky header ------------------------------ */
+html.x-js .topbar{transition:box-shadow .3s,background .3s;}
+html.x-js .topbar.x-scrolled{box-shadow:0 8px 28px rgba(40,70,120,.12);}
